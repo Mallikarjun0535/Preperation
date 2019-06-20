@@ -1,0 +1,662 @@
+﻿JavaBrains 
+
+what is Java script?
+
+lightweight --> small memory foot print
+interupted --> no compiler...intermeidate file will not generate.
+Object orented --> modal around objects
+firstclass functions --> functions as a parmeter to a method call(function as value)
+scripting language--> instructions return for runtime enviroment.(we call write all the instructions in  file (script) and execute it.
+
+runtime enviroment for javascript is web browser
+Dom tree (Document object model Tree) 
+
+Html is a static language--
+Java Script is  Dynamic language--
+Java Script can have a option to modify the dom elements dynamically.
+Jquery is framework
+
+Why to learn javascript?
+
+client side we development
+-------------------------
+javascript typescript
+Jquery/Angular/React 
+Ember backbone
+
+Server side
+------------
+NodeJs
+Expresss
+
+
+Java Script history 
+
+brendan Eye(Netscape)
+Standardize By Eacmma (Eacmma script 6.0 current version)
+
+
+varibles
+---------
+
+var value = 42; 
+	(or)
+var value; 
+value = 45;
+
+Primitive types in java script
+------------------------------
+Number -> "Double pression 64 format IEEE 754 values"
+var a = 10; 
+var b = 20; 
+var c= a+b;
+console.log(c);
+These are all floating point numbers
+String -> 
+Boolean -> 
+
+
+Java script does not do Strong typing(week typing)
+-----------------------------------
+var a = 1; 
+a = "helloworld"; 
+console.log(a)
+
+No errors 
+
+Decalration
+-----------
+var value;
+ 
+Definatation
+------------  
+value = 10;
+
+undefined
+-----------
+when we declare a variable in javascript there is an excplict value assigned to it.
+
+var val; 
+it means undefined
+
+null
+-----
+one more type in java script is null 
+
+var a = 10 
+a= null;
+console.log(a); ---> null
+
+when we want to assign a non value then we go for null
+
+
+symbol(Eacmma script 6.0)
+--------------
+
+Just like a Enum in java  
+
+variable and values intoragated
+-------------------------------
+how to find the given variable is what type in javascript
+"typeof"
+
+typeof <value> 
+typeof <varible> 
+
+exmp:
+-----
+var a = 10; 
+console.log(typeof a);--> number 
+var b = null
+console.log(typeof b); --> object
+console.log(typeof 10); -- number 
+
+
+Type coersion
+-------------
+
+123+"4" --> return a String 
+10+"10" -->"1010"
+var a = 10; 
+var b = "10"; --> even  it  is String value is printing 
+(java script doing the two values type conversion and checking one is number and another is String java Script do the type conversion  of integer to String and checking)
+if(a==b){
+console.log("values are equal");
+}
+
+
+= assignment operatator
+==  comparising operater
+=== with out conversion and check the values
+
+
+var a = 10; 
+var b = "10"; 
+if(a===b){--> it will not exceute
+console.log("values are equal");
+}
+
+
+var a = 5; 
+var b = -10;
+if(a){
+console.log("Data is printing");
+}
+if(b){
+console.log("b is true");
+}
+
+var c=0; 
+var d ="";
+if(c)--> fails 
+if(d)--> fails
+for all non zero values condition is true
+javascript is flexible in typing
+values of all types have an associated with boolean value.
+
+
+if two objects are pointing to same memory  or same location then only the objects are equal
+--------------------------------------------------------------------------------------------
+var myObj = {
+ "name" : "mallik"
+};
+
+var copyobj = myObj;
+
+var obj ={
+   "name" : "mallik"
+};
+
+if(myObj===obj){
+  console.log("mmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm");
+}else{
+  console.log("ppppppppppppppppppppppppppp"); ---- it will execute 
+}
+
+if(myObj===copyobj){
+  console.log("mmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm");---- it will execute 
+}else{
+  console.log("ppppppppppppppppppppppppppp"); 
+}
+
+
+
+*************************************************************************
+java script Object
+-----------------
+
+var myObj = {}; --> empty object
+myObj.name = "mallik";
+adding a property(name) to an object onfly 
+
+var myObj={};
+myObj.name = "mallik";
+myObj.id =  123;
+
+console.log(myObj);
+console.log("printing the id of an object "+ myObj.id); --> printing the object values
+
+Object { name: "mallik", id: 123 } --> example output 
+printing the id of an object 143 --> printing the properties of an object.
+​
+
+
+Another way of creating an object (Object literal)
+
+var myObj = {
+ "name" : "mallik",
+ "id" : 123,
+ "role": "Developer"
+};
+
+console.log(myObj); --> Object { name: "mallik", id: 123, role: "Developer" }
+console.log("printing the id of an object   " +myObj.id); --> printing the id of an object 123
+
+*******
+[""]--> we can also print the object values using bracts also by passing a string 
+console.log("printing the id of an object   "+myObj["id"]);
+
+****undefined
+console.log("Accesing the property which is not defined" +myObj.xyz)--->ccesing the property which is not defined Undefined 
+
+
+when to use [](Square bracket notation) are .(dot) notation
+
+use [] notation
+----------------
+	when property is reserved word/invalid identifier
+	propername starts with number
+	var myObj = {
+	"name" : "mallik",
+	"id" : 123,
+	"role": "Developer",
+	"1":"xyz" --------------> here property as number are invalid identifier. when we use like "console.log(myobj.1)" we get error
+							  but we use with "console.log(myobj["1"])" it works in certian cases it .(dot) operater will not work then we use [](Square bract with String)
+	}
+
+	*****
+	Property name is Dynamic
+	var prop = "id";
+	console.log(myObj["prop"]);
+	
+
+Nested objects in javaScript and how to access in using .(dot) and []square bracket
+-----------------------------------------------------------------------------------
+
+var myObj = {
+ "name" : "mallik",
+ "id" : 123,
+ "role": "Developer",
+ "company":{
+    "name" : "Econsys",
+	 "loc"  : "USA"
+  }
+};
+console.log(myObj.company) --> Object { name: "Econsys", loc: "USA" }
+console.log(myObj.company.loc) -->USA
+
+we can add the property as simple  like 
+var myObj = {
+ "name" : "mallik",
+ "id" : 123,
+ "role": "Developer",
+ "company":{
+    "name" : "Econsys",
+	 "loc"  : "USA"
+  }
+};
+
+myObj.company.cmmlevel = "five";
+console.log(myObj.company) --> Object { name: "Econsys", loc: "USA", cmmlevel: "five" }
+console.log(myObj.company["cmmlevel"]); -->five
+
+
+
+How to delete a property from a javaScript Object
+-------------------------------------------------
+
+var Obj= {
+ "prop1" : "one",
+  "prop2" : "two"
+};
+
+delete obj.prop1
+
+
+
+Arrays In JavaScript
+--------------------
+var myArray = [100,200,300] --> Javascript is an inline array (like object)
+
+how to add an element to an array
+----------------------------------
+myArray[3] = 400
+
+what is the value of an array when we access outofBound
+-------------------------------------------------------
+console.log(myArray[4]) ---> undefined
+
+How to find the length 
+console.log(myArray.length)
+
+
+Wapper Objects in javaScript
+------------------------
+var greeting = "Hello World"; --> it is a String primitive 
+
+typeOf greeting --> String 
+
+greating.length---> 11 (How it is printing the length even it is a String(java Script internally creating Object from string when we calling the length and destroying it)
+
+
+
+
+Functions in javaScript
+------------------------
+
+function sayHello(){ ---> delcaration
+console.log("hello");
+}
+
+
+sayHello()-->defination
+
+
+function with arguments
+------------------------
+
+function sayHello(name,age){ ---> delcaration
+console.log("hello"+name+"age"+age);
+}
+
+
+sayHello("Mallik", 29);
+sayHello("Mallik")----> if we didnt pass any argument what is the value of an age it is an undefined(in other languages may not find 
+the function if we didnt pass the argument but javaScript in pass default value and execute the function)
+sayHello("Mallik", 29,"Arjun")---> here arjun will be ingnored and automatically and function will execute
+
+*****
+overloading functions concept is not applicable in javaScript******
+
+
+
+function with return values 
+-----------------------------
+
+function sayHello(name){
+  return "Hello "+name;
+}
+
+console.log(sayHello("Mallik")); ---> it returns "Hello Mallik"
+
+
+
+*******
+Function Expressions
+----------------------
+
+Functions in javascript is firstcalss  values ******(it means a  function is value to a variable)
+
+var f = function sayHello(name){
+  return "Hello "+name;
+};----> function expression is good to have semicolon;
+
+we can call the function in these two ways
+console.log(sayHello("Mallik")); --> Hello Mallik
+console.log(f("Arjun")); --> Hello Arjun 
+
+
+
+var f = function foo(name){
+  return "Hello "+name;
+}
+
+
+console.log(f("Arjun"));
+
+
+here when we calling the function with f("Arjun") no need to use foo
+
+******
+var f = function (name){ --> this is called annonymus fucntion expression
+  return "Hello "+name;
+}
+
+f("mallik") ; 
+
+f = 1; --> here f assigned to 1
+
+f("mallik"); will through an error
+
+
+Function Passing in another function
+--------------------------------------
+
+var f = function(){ --> annonymus function 
+console.log("Hello");
+}
+
+var execute = function(fn){
+fn();
+}
+
+execute(f);
+
+itermmidate function
+------------------
+
+
+var f = function(name){
+console.log("Hello");
+}
+
+var execute = function(fn ,name){
+fn(name);
+}
+
+execute(f, "Mallik");
+
+
+Object with function
+---------------------
+
+
+var myobj = {
+"prop" : true
+}
+
+myobj.myMethod = function(){ --> it is a just a property of an object
+console.log("hello")
+}
+
+myobj.myMethod();--> it will excute the function 
+
+******************
+This operater in java Script
+-----------------------------
+
+var person ={
+"firstName" : "Mallik",
+"lastName" : "mitta",
+"getfullName" : function (){
+  return person.firstName+" "+person.lastName; --> i dont want person object full name i want the object of get full name is the part of  so use this 
+                                                    this.firstName+" "+this.lastName;
+ }
+}
+
+console.log(person.getfullName()) ---> it will execute good way 
+suppose if i make person object is empty like below and calling with other name 
+
+var person2 = person;
+person ={} --> when we make person object is empty
+console.log(person2.getfullName());  --> it not able to find the person firstName or lastName and it prints undefined undefined
+
+
+
+********
+implicit arguments in function
+------------------------------
+
+1)Arguments
+-------------
+var add = function(a, b){ 
+  console.log(arguments);----> this is the default parmeter which function has "arguments"
+  return a+b;
+}
+
+add(10 , 20)
+
+var add = function(a,b){
+var i , sum = 0;
+for(i=0; i < arguments.length ; i++)
+sum =+ arguments[i];
+return sum;
+}
+
+add(10,20,30,40,50) --> this values are ignored while executing it stored in arguments.
+arguments values look like an array but it not an array.
+
+2)this operater 
+-------------
+
+
+Function can be written in literal form 
+Function also an object 
+Function is a value that assigned to a varaible 
+can be called buy passing an arguments
+Flexible argument count 
+function overlading is not possible 
+default arguments
+
+
+Arrays and there methods
+------------------------
+
+myArray.push(500); ---> adding an element to the first 
+myArray.pop()--> removing the last element out 
+myArray.shift() --> removing the first element of an array
+myArray.unShift() --> adding the first element of an array 
+
+
+var myArray = [10,20,"Hello",{}]
+myArray.push(30)
+
+myArray
+Array(5) [ 10, 20, "Hello", {}, 30 ]
+
+myArray.pop()
+30
+
+myArray.shift(10)
+10
+
+myArray
+Array(3) [ 20, "Hello", {} ]
+
+myArray.shift()
+20
+myArray
+Array [ "Hello", {} ]
+
+myArray.unshift(10)
+3
+myArray
+Array(3) [ 10, "Hello", {} ]
+
+
+ForEach *************************************************foreach method takes function as argument.
+------------------------------------------------------
+var myArray = [10,20,"Hello",{}]
+
+myArray.forEach(function(){
+  console.log("for each method in array takes function as argument") --> it excuted four times based on elements 
+});
+
+
+
+var myArray = [10,20,"Hello",{}]
+
+myArray.forEach(function(e){ --> each element in array foreach method is passing to the function
+  console.log("elements"+ e) ------>elements	10 
+									elements	20 
+									elements	Hello
+									elements	[object Object]
+});
+
+
+myArray.forEach(function(e,index,array){
+console.log(e,index);
+};
+
+
+javaScript Scopes and Clousers
+____________________________________________________________________________________________________________________________________________________
+{
+int a = 10; --> in other languanges scopes are like between the open and closing curley braces 
+}
+
+***
+But in javaScript scopes are under the function level
+
+var name = "Mallik";
+if(name === "Mallik"){
+var department = "IT";
+}
+console.log(name);
+console.log(department) ---> even it also print because javaScript scope are not block level it function level
+
+
+******
+var name = "Mallik";
+function foo(){
+	if(name==="Mallik"){
+	var department = "it";
+	}
+}
+console.log(department);---> it gives department is undefined(***ERROR***) beacause javaScript scopes are function level.
+
+
+
+
+*****
+var top = 10;
+var inner  = 50;
+
+function foo() {
+var inner = 20; 
+console.log(inner); --> what it prints it prints 20 because function level scope
+}
+
+foo();
+console.log(inner);---> it prints 50 because outer scope
+
+
+
+********
+function foo(){
+var a= 10; ----> this variable are in local scope not in  global scope
+var b = 20; 
+console.log(a+b);
+}
+
+
+
+*****
+var name = "Mallik"; 
+
+function printGreeating(name){ -->  Here name created variable with local scope. 
+	console.log("hello "+name); ----> it prints Hello Mallikarjun 
+}
+
+printgreeting("Mallikarjun");
+
+
+
+
+**************
+global variables are bad in javaScript because these can be avalible in common scape
+so those can be accessed by any files it may can change also 
+
+poluting the global space is bad thing
+
+if we keep in the varibles inside the fucntion 
+still we spoiling gloabal space with fucntion.
+
+function myfun(){
+var a = 10;  --> instead of creating the global varibles we are creating the data inside the  function 
+var b = 20;
+console.log(a+b);
+}
+
+myfun(); -->> since we are spoil the global space with  calling function
+
+
+ANNONYMUS FUNCTION 
+--------- ----------
+Instead of calling a function with function name just remove the name of the function 
+
+myfun();--> instead of writing the name we can do like this  
+(function (){var a = 10;})();  ----->>>means (function (){var a = 10;})= myfun both are same
+
+
+
+
+
+
+***********************************
+
+
+how to convert
+x = [[1,2],[3,4],[5,6]];
+o = x.reduce(function(prev,curr){prev[curr[0]]=curr[1];return prev;},{})
+ 
+
+
+
+
+
+
+
+
+
+

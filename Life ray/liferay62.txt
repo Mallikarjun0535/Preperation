@@ -1,0 +1,213 @@
+Default modes of liferay portlet are 
+-----------------------------------
+view , Edit(preference),Help
+
+In above addition liferay also provides 
+--------------------------------------
+About,config,print,EditDefault,EditGuestand preview. 
+
+
+Intially two phases are availabe
+---------------------------------
+upto jsr-168
+
+RenderPhase: it useually used for generating the view things Ex-html 
+
+ActionPhase: it useually use for state changing function if we want to submit a form or save a data into database
+
+from JSR-268 
+It was added two phases 
+
+Event phase : the porlet respond for an events 
+
+Resource Serving phase : it just like ajax calling , the portlet serve resourse like pdf files 
+
+
+There are mainly three interfaces
+---------------------------------
+Javax.portlet.Portlet     
+	1) void init(PortletConfig config)
+	2) void render(RenderRequest request, RenderResponce response)
+	3) void processAction(ActionRequest request , ActionResponse response)
+	4) void destroy() 
+javax.portlet.EventPortlet
+	This interface consit only one method 
+	processEvent() -->for interportlet communication.
+javax.portlet.ResourseServingPortlet
+	This interface also contain  one method used for ajax cal
+	void serveResourse(ResourseRequest req, ResourceResponse res)
+
+portlet urls 
+--------------
+1) RenderURL 
+--------------
+
+<porlet:renderURL var="varName">
+  <porlet:param name="name" value="value"/>
+</porlet:renderURL>
+
+<!--How to use -->
+<a href="<%=varName %>">Render Link</a> based on click rendering portlet is called.
+
+2) ActionURL 
+--------------
+
+<porlet:actionURL var="varName">
+  <porlet:param name="name" value="value"/>
+</porlet:actionURL>
+
+<!--How to use -->
+<a href="<%=varName %>">action Link</a>
+
+***incase of action url once action method is called automatically render method also called.
+
+3) ResourceURL
+-------------
+
+<porlet:resourceURL var="varName">
+  <porlet:param name="name" value="value"/>
+</porlet:resourceURL>
+
+<!--How to use -->
+<a href="<%=varName %>">Resource Link</a> 
+
+basically used for ajax calling  we can also sen parmeters.
+
+
+life cycle of portlet
+**********************
+
+void init(PortletConfig config):
+--------------------------------
+it is called only once when portlet is deployed.
+it is basically used to intialize any backened resourses like database connectivity
+
+void processAction(ActionRequest request , ActionResponse response):
+--------------------------------------------------------------------
+only one portlet can go through this phase during a single request/Responce cycle.
+after action is called is there is any event then event is called finally render method.
+
+void render(RenderRequest request, RenderResponce response)
+----------------------------------------------------------
+after each action render is called.
+if there is a call for serveResource then render method is not called.
+
+void destroy() 
+--------------
+called by the porlet container to indicate that portlet is being taken out of service.
+to trigger the destroy method will need to undeploy the porlet.
+
+
+
+******if there are two porlets in page called A ans B
+Case1 : Render Request called for a portletA
+---------------------------------------------
+if The Render method of portlet A is called automatically Render method of portlet B also called
+
+case2 : Action Request for portlet A
+------------------------------------
+Then action method and render method will be called for portlet A
+and also Render method for porlet B also called 
+
+case 3:call on a server Resouce in portlet A
+---------------------------------------------
+then no render method is called for any portlet
+
+
+
+Configuration files are stored under docroot/WEB-INF folder. 
+These configuration files are comprises of standard JSR-286 portlet configuration file
+portlet.xml and other three liferay specific configuration files as below
+
+liferay-display.xml:- This file describes the category of portlet,
+which will be appear under Add menu. (from top bar after login as Liferay Admin).
+
+liferay-portlet.xml:- This file describes some additional liferay specific feature on top of JSR-286. 
+Ex. We can declare the portlet as instantiable from this file. 
+Instantiable means we can place more than one portlet instance on same page.
+
+liferay-plugin-package.properties:- We can configure dependency Jars and TLDs through this file.
+Now we will see content of each file and understand each elements.
+ 
+First we will see portlet.xml. The content of this file is as below.
+<portlet-app version="2.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://java.sun.com/xml/ns/portlet/portlet-app_2_0.xsd" xsi:schemalocation="http://java.sun.com/xml/ns/portlet/portlet-app_2_0.xsd http://java.sun.com/xml/ns/portlet/portlet-app_2_0.xsd">
+<portlet>
+  <portlet-name>hello-word</portlet-name>
+  <display-name>Hello Word</display-name>
+  <portlet-class>com.liferay.util.bridges.mvc.MVCPortlet</portlet-class>
+  <init-param>
+   <name>view-jsp</name>
+   <value>/view.jsp</value>
+  </init-param>
+  <expiration-cache>0</expiration-cache>
+  <supports>
+   <mime-type>text/html</mime-type>
+  </supports>
+  <portlet-info>
+   <title>Hello Word</title>
+   <short-title>Hello Word</short-title>
+   <keywords>Hello Word</keywords>
+  </portlet-info>
+  <security-role-ref>
+   <role-name>administrator</role-name>
+  </security-role-ref>
+  <security-role-ref>
+   <role-name>guest</role-name>
+  </security-role-ref>
+  <security-role-ref>
+   <role-name>power-user</role-name>
+  </security-role-ref>
+  <security-role-ref>
+   <role-name>user</role-name>
+  </security-role-ref>
+ </portlet>
+</portlet-app>
+
+
+portlet-name:- Unique name of portlet across.In liferay portal its also refered as portlet-id.
+display-name:- Short name of portlet that will be used by tool. Its not required to be unique.
+portlet-class:- fully qualified portlet class name.
+init-param:- Just like servlet, we can pass init param for portlet.
+expiration-cache:- defines time in second after which portlet output expires. -1 means never expire.
+supports:- support mime type.
+portlet-info:- define portlet information.
+security-role-ref:-will define which role can access this portlet.
+
+
+Below is the content of liferay-portal.xml file
+-----------------------------------------------
+
+<liferay-portlet-app>
+ <portlet>
+  <portlet-name>hello-word</portlet-name>
+  <icon>/icon.png</icon>
+  <instanceable>true</instanceable>
+  <header-portlet-css>/css/main.css</header--portlet-css>
+  <footer-portlet-javascript>/js/main.js</footer-portlet-javascript>
+  <css-class-wrapper>hello-word-portlet</css-class-wrapper>
+ </portlet>
+ <role-mapper>
+  <role-name>administrator</role-name>
+  <role-link>Administrator</role-link>
+ </role-mapper>
+ <role-mapper>
+  <role-name>guest</role-name>
+  <role-link>Guest</role-link>
+ </role-mapper>
+ <role-mapper>
+  <role-name>power-user</role-name>
+  <role-link>Power User</role-link>
+ </role-mapper>
+ <role-mapper>
+  <role-name>user</role-name>
+  <role-link>User</role-link>
+ </role-mapper>
+</liferay-portlet-app>
+
+portlet-name:- unique name of portlet (this should be same as what we have defined in portal.xml file).
+icon:- path to the image of icon.
+instanceable:- defines whether multiple instance of this portlet can be placed on same page or not.
+header-portlet-css:- path of css files which will be included in <head> section of final portlet output.
+footer-portlet-javascript:- path of .js files for this portlet which will be included at the and of page 
+ 
+

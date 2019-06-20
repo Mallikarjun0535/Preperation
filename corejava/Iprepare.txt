@@ -1,0 +1,1070 @@
+
+Java.lang.package
+------------------
+OBJECT Class Mehtods 
+1. public String toString();
+2. public native int hashCode();
+3. public boolean equals(Object o);
+4. protected native Object clone()throws CloneNotSupportedException;
+5. public final Class getClass();
+6. protected void finalize()throws Throwable;
+7. public final void wait() throws InterruptedException;
+8. public final native void wait()throws InterruptedException;
+9. public final void wait(long ms,int ns)throws InterruptedException;
+10. public final native void notify();
+11. public final native void notifyAll();
+
+
+1)For every object jvm will generate a unique number which is nothing but
+hashCode.
+2)If we didn't override hashCode() method then Object class hashCode() method
+will be executed which generates hashCode based on address of the object but it
+doesn't mean hashCode represents address of the object
+3) If we are giving opportunity to Object class toString() method it internally calls
+hashCode() method. But if we are overriding toString() method it may not call
+hashCode() method.
+
+4)If our class doesn't contain .equals() method then object class .equals() method
+will be executed which is always meant for reference comparison[address
+comparison]. i.e., if two references pointing to the same object then only .equals(
+) method returns true .
+
+5)In the above program Object class .equals() method got executed which is always
+meant for reference comparison that is if two references pointing to the same
+object then only .equals(() method returns true.
+In object class .equals() method is implemented as follows which is meant for
+reference comparison.
+
+6)In String class .equals( ) is overridden for
+content comparision hence if content is same .equals( ) method returns true ,
+even though ths objects are different.
+
+7)In StringBuffer class .equals( ) is not overriden for content comparision hence
+Object class .equals( ) will be executed which is meant for reference comparision , hence if
+objects are different .equals( ) method returns false , even though content is same.
+
+8)In String class , Wrapper classes and all collection classes .equals( ) method is
+overriden for content comparision
+
+9)String s = new String("ashok");
+StringBuffer sb = new StringBuffer("ashok");
+System.out.println(s == sb); // CE : incomparable types : String and
+StringBuffer
+System.out.println(s.equals(sb)); //false
+Note:
+in general we can use == (double equal operator) for reference comparison whereas
+.equals() method for content comparison.
+
+10)If 2 objects are equal by .equals() method compulsory their hashcodes must be
+equal (or) same. That is If r1.equals(r2) is true then r1.hascode()==r2.hashcode( )
+must be true.
+
+11)If hashcodes of 2 objects are not equal then these objects are always not equal by
+.equals() method also. That is If r1.hashCode()==r2.hashCode() is false then
+r1.equals(r2) is always false.
+
+12)If 2 objects are equal by == operator then their hash codes must be same.(valid)
+
+
+
+Clone:
+------
+13). The process of creating exactly duplicate object is called cloning.
+14). The main objective of cloning is to maintain backup purposes.(i.e.,
+goes wrong we can recover the situation by using backup copy.)
+
+
+We can perform cloning only for Cloneable objects.
+An object is said to be Cloneable if and only if the corresponding class
+implements Cloneable interface.
+
+Cloneable interface present in java.lang package and does not contain any
+methods. It is a marker interface where the required ability will be provided
+automatically by the JVM.
+
+If we are trying to perform cloning or non-clonable objects then we will get
+RuntimeException saying CloneNotSupportedException.
+
+15) Shallow cloning is the best choice , if the Object contains only primitive values.
+
+16). In Shallow cloning by using main object reference , if we perform any change to
+the contained object then those changes will be reflected automatically in cloned
+copy.
+
+17)The process of creating exactly independent duplicate object(including contained
+objects also) is called deep cloning.
+
+18)In Deep cloning , if main object contain any reference variable then the
+corresponding Object copy will also be created in cloned object.
+
+19)Object class clone( ) method meant for Shallow Cloning , if we want Deep
+cloning then the programmer is responsible to implement by overriding clone( )
+method.
+
+20)getClass() method :
+This method returns runtime class definition of an object.
+System.out.println(con.getClass( ).getName( ) );
+
+21)finalize( ) :
+Just before destroying an object GC calls finalize( ) method to perform CleanUp
+activities .
+
+22)String s1=new String("ashok");
+String s2=new String("ashok");
+System.out.println(s1==s2);//false
+System.out.println(s1.equals(s2));/
+/true
+In String class .equals() method is overridden for content comparison hence
+if the content is same .equals() method returns true even though objects are different
+
+
+23)String s=new String("bhaskar");
+In this case two objects will be created one is on the heap the
+other one is SCP(String constant pool) and s is always pointing
+to heap object
+
+24)String s="bhaskar";
+In this case only one object will be created
+in SCP and s is always referring to object.
+
+
+25)	1. Object creation in SCP is always optional 1st JVM will check is any object
+	already created with required content or not. If it is already available then it will
+	reuse existing object instead of creating new object. If it is not already there then
+	only a new object will be created. Hence there is no chance of existing 2 objects
+	with same content on SCP that is duplicate objects are not allowed in SCP.
+
+	***2. Garbage collector can't access SCP area hence even though object doesn't have
+	any reference still that object is not eligible for GC if it is present in SCP.
+	
+	3. All SCP objects will be destroyed at the time of JVM shutdown automatically.
+
+
+26)Interning of String objects :
+By using heap object reference, if we want to get corresponding SCP object , then we
+should go for intern() method.
+
+27) String s=new String();
+    String s=new String(String literals);
+    String s=new String(StringBuffer sb);
+    String s=new String(char[] ch);
+    String s=new String(byte[] b);
+
+     public char charAt(int index);
+     public String concat(String str);
+     public boolean equals(Object o);
+     public boolean equalsIgnoreCase(String s);
+     public String substring(int begin);
+     public String substring(int begin, int end);
+     public int length();
+     public String replace(char old, char new);
+     public String toLowerCase();
+     public String toUpperCase();
+     public String trim();
+     public int indexOf(char ch);
+     public int lastIndexOf(Char ch);
+
+28)Because runtime operation if there is a change in content with those changes a new
+object will be created only on the heap but not in SCP.
+If there is no change in content no new object will be created the same object will be
+reused.
+This rule is same whether object present on the Heap or SCP
+
+29)***** How to Create a immutable class in java
+Make your class final, so that no other classes can extend it.
+Make all your fields final, so that they’re initialized only once inside the constructor and never modified afterward.
+Don’t expose setter methods.
+When exposing methods which modify the state of the class, you must always return a new instance of the class.
+If the class holds a mutable object: Inside the constructor, make sure to use a clone copy of the passed argument and never set your mutable field to the real instance passed through constructor, this is to prevent the clients who pass the object from modifying it afterwards.
+Make sure to always return a clone copy of the field and never return the real object instance.
+
+30)1. If the content is fixed and won't change frequently then we should go for String.
+   2. If the content will change frequently but Thread safety is required then we
+     should go for StringBuffer.
+   3. If the content will change frequently and Thread safety is not required then we
+     should go for StringBuilder.
+
+
+
+Wapper classes
+------------
+31)All most all wrapper classes define the following 2 constructors one can take
+   corresponding primitive as argument and the other can take String as argument.
+	 Example:
+	 1) Integer i=new Integer(10);
+	 2) Integer i=new Integer("10");
+
+32)Character class defines only one constructor which can take char primitive as
+ argument there is no String argument constructor.
+ Character ch=new Character('a');//valid
+ Character ch=new Character("a");//invalid  
+
+33)1. valueOf() method.
+	We can use valueOf() method to create wrapper object for the given primitive or String
+	this method is alternative to constructor.
+	Every wrapper class except Character class contains a static valueOf() method to create
+	wrapper object for the given String
+	public static wrapper valueOf(String s , int radix ) ;
+	//radix means base
+	Note:
+	the allowed radix range is 2 to 36
+
+   2. XXXValue() method.
+	We can use xxxValue() methods to convert wrapper object to primitive.
+	Every number type wrapper class (Byte, Short, Integer, Long, Float, Double) contains
+	the following 6 xxxValue() methods to convert wrapper object to primitives.
+	Integer i=new Integer(130);
+	System.out.println(i.byteValue());//-126
+	System.out.println(i.shortValue());//130
+	System.out.println(i.intValue());//130
+	System.out.println(i.longValue());//130
+	System.out.println(i.floatValue());//130.0
+	System.out.println(i.doubleValue());//130.0
+
+	charValue() method:
+	Character class contains charValue() method to convert Character object to char
+	primitive.
+	booleanValue() method:
+	Boolean class contains booleanValue() method to convert Boolean object to boolean
+	primitive.
+
+   3. parseXxx() method.
+	We can use this method to convert String to corresponding primitive.
+	boolean b=Boolean.parseBoolean("ashok");
+	double d=Double.parseDouble("10.5")
+   4. toString() method
+	Integer and Long classes contains the following static toString() method to convert the
+	primitive to specified radix String form.
+	public static String toString(primitive p, int radix);
+	String s1=Integer.toString(7,2);
+	String s2=Integer.toString(17,2);
+	System.out.println(s1);//111
+	System.out.println(s2);//10001
+
+34). Void class is the direct child class of Object and it doesn't contains any method
+     and it contains only one static variable Void.TYPE
+     we can use Void class in reflections
+     Ex : To check whether return type of m1( ) is void or not .
+	if(ob.getClass( ).getMethod("m1").getReturnType( )==Void.TYPE) {
+	----------------------------
+	----------------------------
+	}
+
+
+
+-----------------------------------------------------------------------------------------------------------------------
+Inner Class
+-----------
+
+1) Nested Inner class
+2) Method Local inner classes
+3) Anonymous inner classes
+4) Static nested classes
+
+
+1)Nested inner class can access outer clas instance varibles.
+2)Nested inner class should not have static methods it will throw an error.
+3)Inside inner class we can't declare static members. Hence it is not possible to declare main() method and we can't invoke inner class directly from the command
+prompt.(because it consider as an object)
+4)Within the inner class "this" always refers current inner class object. To refer
+current outer class object we have to use "outer class name.this"
+
+
+1)Method local inner class is inside the method of outer class 
+2)Method Local inner classes can’t use local variable of outer method until that local variable is not declared as final.
+3)Local inner class cannot access non-final local variable till JDK 1.7. Since JDK 1.8, it is possible to access the non-final local variable in method local inner class.
+Method local inner class can’t be marked as private, protected, static and transient but can be marked as abstract and final, but not both at the same time.
+4)If we are declaring inner class inside instance method then we can access both
+static and non static members of outer class directly.
+5) But if we are declaring inner class inside static method then we can access only
+static members of outer class directly and we can't access instance members
+directly.
+
+Static nested classes are not technically an inner class. They are like a static member of outer class.
+
+
+Anonymous inner classes
+Anonymous inner classes are declared without any name at all. They are created in two ways.
+a) As subclass of specified type
+class Demo {
+   void show() {
+      System.out.println("i am in show method of super class");
+   }
+}
+class Flavor1Demo {
+ 
+   //  An anonymous class with Demo as base class
+   static Demo d = new Demo() {
+       void show() {
+           super.show();
+           System.out.println("i am in Flavor1Demo class");
+       }
+   };
+   public static void main(String[] args){
+       d.show();
+   }
+}
+
+b) As implementer of the specified interface
+class Flavor2Demo {
+ 
+    // An anonymous class that implements Hello interface
+    static Hello h = new Hello() {
+        public void show() {
+            System.out.println("i am in anonymous class");
+        }
+    };
+ 
+    public static void main(String[] args) {
+        h.show();
+    }
+}
+ 
+interface Hello {
+    void show();
+}
+
+
+
+Note: Inside Anonymous inner classes we can take or declare new methods but outside
+of anonymous inner classes we can't call these methods directly because we are
+depending on parent reference.[parent reference can be used to hold child class object
+but by using that reference we can't call child specific methods]. These methods just for
+internal purpose only.
+
+
+Regular Expression 
+-----------------------------------------------------------------------------------------------
+
+A Regular Expression is a expression which represents a group of Strings according to a
+particular pattern.
+
+
+Pattern
+------
+A Pattern object represents "compiled version of Regular Expression".
+We can create a Pattern object by using compile() method of Pattern class.
+public static Pattern compile(String regex);
+Example:
+Pattern p=Pattern.compile("ab");
+
+Matcher
+-------
+A Matcher object can be used to match character sequences against a Regular
+Expression.
+We can create a Matcher object by using matcher() method of Pattern class.
+public Matcher matcher(String target);
+Matcher m=p.matcher("abbbabbaba");
+
+
+Note: Pattern and Matcher classes are available in java.util.regex package, and
+introduced in 1.4 version
+Character classes:
+1. [abc]-------------------Either 'a' or 'b' or 'c'
+2. [^abc] -----------------Except 'a' and 'b' and 'c'
+3. [a-z] --------------------Any lower case alphabet symbol
+4. [A-Z] --------------------Any upper case alphabet symbol
+5. [a-zA-Z] ----------------Any alphabet symbol
+6. [0-9] --------------------Any digit from 0 to 9
+7. [a-zA-Z0-9] ------------Any alphanumeric character
+8. [^a-zA-Z0-9] ------------Any special character
+
+
+Predefined character classes:
+\s---------------------space character
+\d---------------------Any digit from o to 9[o-9]
+\w---------------------Any word character[a-zA-Z0-9]
+. ---------------------Any character including special characters.
+\S---------------------any character except space character
+\D---------------------any character except digit
+\W---------------------any character except word character(special character)
+
+
+Quantifiers can be used to specify no of characters to match.
+a-----------------------Exactly one 'a'
+a+----------------------At least one 'a'
+a*----------------------Any no of a's including zero number
+a? ----------------------At most one 'a
+
+
+StringTokenizer:
+This class present in java.util package.
+It is a specially designed class to perform string tokenization
+
+***The default regular expression for the StringTokenizer is space
+
+StringTokenizer st=new StringTokenizer("sai software solutions");
+StringTokenizer st=new StringTokenizer("1,99,988", ",");
+
+while(st.hasMoreTokens())
+{
+System.out.println(st.nextToken());//sai
+//software
+//solutions
+System.out.println(st.nextToken());//1
+//99
+//988
+}
+}
+
+
+
+Garbage collection in java
+-------------------
+Even through programmer is not responsible for destruction of objects but it is
+always a good programming practice to make an object eligible for GC if it is no
+longer required.
+An object is eligible for GC if and only if it does not have any references.
+
+1.Nullifying the reference variable:
+If an object is no longer required then we can make eligible for GC by assigning "null"
+to all its reference variables.
+
+2.Reassign the reference variable:
+If an object is no longer required then reassign all its reference variables to some other
+objects then old object is by default eligible for GC.
+
+
+3. Objects created inside a method:
+Objects created inside a method are by default eligible for GC once method completes.
+
+4.Island of Isolation:
+island of isolation. (Island of Isolation all references are internal references )
+
+Note: if an object doesn't have any reference then it always eligible for GC.
+Note: Even though object having reference still it is eligible for GC some times
+
+
+The methods for requesting JVM to run GC:
+Once we made an object eligible for GC it may not be destroyed immediately by
+the GC. Whenever jvm runs GC then only object will be destroyed by the GC.
+But when exactly JVM runs GC we can't expert it is vendor dependent.
+
+We can request jvm to run garbage collector programmatically, but whether jvm
+accept our request or not there is no guaranty. But most of the times JVM will
+accept our request.
+
+
+The following are various ways for requesting jvm to run GC:
+
+By System class:
+System class contains a static method GC for this purpose.\
+Example:
+System.gc();
+
+By Runtime class:
+A java application can communicate with jvm by using Runtime object.
+Runtime class is a singleton class present in java.lang. Package.
+We can create Runtime object by using factory method getRuntime().
+
+Example:
+Runtime r=Runtime.getRuntime();
+Once we got Runtime object we can call the following methods on that object.
+freeMemory(): returns the free memory present in the heap.
+totalMemory(): returns total memory of the heap.
+gc(): for requesting jvm to run gc.
+
+
+System.gc(); (valid)
+Runtime.gc(); (invalid)
+(new Runtime).gc(); (invalid)
+Runtime.getRuntime().gc(); (valid)
+
+
+Note: gc() method present in System class is static, where as it is instance method inRuntime class.
+Note: Over Runtime class gc() method , System class gc() method is recommended to use.
+Note: in java it is not possible to find size of an object and address of an object
+
+
+
+Finalization:
+------------
+Just before destroying any object gc always calls finalize() method to performcleanup activities.
+If the corresponding class contains finalize() method then it will be executed
+otherwise Object class finalize() method will be executed.
+which is declared as follows.
+protected void finalize() throws Throwable
+
+
+Case 1:
+Just before destroying any object GC calls finalize() method on the object which is
+eligible for GC then the corresponding class finalize() method will be executed.
+For Example if String object is eligible for GC then String class finalize()method is
+executed but not Test class finalize() method.
+
+Case 2*****:
+We can call finalize() method explicitly then it will be executed just like a normal
+method call and object won't be destroyed. But before destroying any object GC always
+calls finalize() method.
+
+
+Note: In Servlets we can call destroy() method explicitly from init() and service()
+methods. Then it will be executed just like a normal method call and Servlet object
+won't be destroyed.
+
+
+Case 3:
+finalize() method can be call either by the programmer or by the GC .
+If the programmer calls explicitly finalize() method and while executing the finalize()
+method if an exception raised and uncaught then the program will be terminated
+abnormally.
+
+If GC calls finalize() method and while executing the finalize()method if an exception
+raised and uncaught then JVM simply ignores that exception and the program will be
+terminated normally.
+
+
+Note:
+The behavior of the GC is vendor dependent and varied from JVM to JVM hence we
+can't expert exact answer for the following.
+When ever the program runs with low memory then the JVM runs GC, but we can't
+except exactly at what time.
+Most of the GC's followed mark & sweap algorithm , but it doesn't mean every GC
+follows the same algorithm.
+
+
+Memory leaks:
+An object which is not using in our application and it is not eligible for GC such
+type of objects are called "memory leaks".
+In the case of memory leaks GC also can't do anything the application will be
+crashed due to memory problems.
+In our program if memory leaks present then certain point we will get
+OutOfMemoryException. Hence if an object is no longer required then it's
+highly recommended to make that object eligible for GC. By using monitoring tools we can identify memory leaks.
+
+Enum 
+----
+We can use enum to define a group of named constants
+
+Enum concept introduced in 1.5 versions.
+When compared with old languages enum java's enum is more powerful.
+By using enum we can define our own data types which are also come enumerated data types.
+
+enum Month
+{
+JAN,FEB,MAR, ... DEC; //; -->optional
+}
+
+
+Internal implementation of enum:
+---------------------------------
+Internally enum's are implemented by using class concept.
+Every enum constant is a reference variable to that enum type object.
+***** Every enum constant is implicitly public static final always..
+
+Note:
+Every enum constant internally static hence we can access by using "enum name".
+Internally inside every enum toString() method is implemented to return name of
+the constant.
+That is from 1.5 version onwards we can use enum type as argument to switch
+statement.
+
+If we declare enum outside the class the allowed modifiers are :
+public
+default
+strictfp
+
+If we declare enum inside a class then the allowed modifiers are :
+public private
+default + protected
+strictfp static
+
+
+Enum vs inheritance:
+--------------------
+Every enum in java is the direct child class of java.lang.Enum class hence it is not
+possible to extends any other enum.
+Every enum is implicitly final hence we can't create child enum.
+Because of above reasons we can conclude inheritance concept is not applicable
+for enum's explicitly. Hence we can't apply extends keyword for enum's .
+But enum can implement any no. Of interfaces simultaneously.
+
+
+Speciality of java enum:
+-----------------------
+When compared with old languages enum, java's enum is more powerful because in
+addition to constants we can take normal variables, constructors, methods etc which
+may not possible in old languages.
+
+*****Inside enum we can declare main method and even we can invoke enum directly from
+the command promp
+
+*****In addition to constants if we are taking any extra members like methods then the list of
+constants should be in the 1st line and should ends with semicolon.
+If we are taking any extra member then enum should contain at least one constant. Any
+way an empty enum is always valid.
+
+Enum can contain constructor. Every enum constant represents an object of that enum
+class which is static hence all enum constants will be created at the time of class loading
+automatically and hence constructor will be executed at the time of enum class loading
+for every enum constants.
+
+We can't create enum object explicitly and hence we can't invoke constructor directly
+
+Inside enum we can take both instance and static methods but it is not possible to take
+abstract methods.
+
+case1:
+****Every enum constant represents an object hence whatever the methods we can apply on
+the normal objects we can apply the same methods on enum constants also.
+Which of the following expressions are valid ?
+Beer.KF==Beer.RC----------------------------> false
+Beer.KF.equals(Beer.RC) -------------------> false
+Beer.KF < Beer.RC------------------------------> invalid
+Beer.KF.ordinal() < Beer.RC.ordinal()------> valid
+
+
+
+enum Vs Enum Vs Enumeration :
+---------------------------
+enum : enum is a keyword which can be used to define a group of named constants.
+
+Enum :
+It is a class present in java.lang package .
+Every enum in java is the direct child class of this class. Hence this Enum class acts as
+base class for all java enum's .
+
+Enumeration :
+It is a interface present in java.util package .
+We can use Enumeration to get the objects one by one from the Collections.
+
+------------------------------------------------------------------------------------------------------------------------------------
+
+Internationalization (I18N)
+--------------------------
+The process of designing a web application such that it supports various countries,
+various languages without performing any changes in the application is called
+Internationalization
+
+
+1. Locale
+-----------
+A Locale object can be used to represent a geographic (country) location (or)
+language.
+Locale class present in java.util package.
+It is a final class and direct child class of Object and , implements Cloneable, and
+Serializable Interfaces.
+
+We can create a Locale object by using the following constructors of Locale class.
+Locale l=new Locale(String language);
+Locale l=new Locale(String language,String country);
+Locale class already defines some predefined Locale constants. We can use these
+constants directly.
+Example:
+Locale. UK
+Locale. US
+Locale. ITALY
+Locale. CHINA
+
+
+
+
+2. NumberFormat
+
+Various countries follow various styles to represent number.
+Example:
+double d=123456.789;
+1,23,456.789------------INDIA
+123,456.789-------------US
+123.456,789-------------ITALY
+
+By using NumberFormat class we can format a number according to a particular
+Locale.
+
+*****NumberFormat class present in java.Text package and it is an abstract class.
+
+Hence we can't create an object by using constructor.
+NumberFormat nf=new NumberFormat(); --------invalid
+
+public static NumberFormat getInstance();
+public static NumberFormat getCurrenyInstance();
+public static NumberFormat getPercentInstance();
+public static NumberFormat getNumberInstance();
+
+
+The methods are exactly same but we have to pass the corresponding Locale object
+as argument.
+Example: public static NumberFormat getNumberInstance(Locale l);
+Once we got NumberFormat object we can call the following methods to format
+and parse numbers.
+public String format(long l);
+public String format(double d);
+
+To convert a number from java form to Locale specific form.
+public Number parse(String source)throws ParseException
+
+To convert from Locale specific String form to java specific form.
+
+To represent in italy form 
+--------------------------
+double d=123456.789;
+NumberFormat nf=NumberFormat.getInstance(Locale.ITALY);
+System.out.println("ITALY form is :"+nf.format(d));
+
+
+NumberFormat class defines the following methods for this purpose.
+1. public void setMaximumFractionDigits(int n);
+2. public void setMinimumFractionDigits(int n);
+3. public void setMaximumIntegerDigits(int n);
+4. public void setMinimumIntegerDigits(int n);
+
+NumberFormat nf=NumberFormat.getInstance();
+nf.setMaximumFractionDigits(3);
+System.out.println(nf.format(123.4));
+System.out.println(nf.format(123.4567));
+nf.setMinimumFractionDigits(3);
+System.out.println(nf.format(123.4));
+System.out.println(nf.format(123.4567));
+nf.setMaximumIntegerDigits(3);
+System.out.println(nf.format(1.234));
+System.out.println(nf.format(123456.789));
+nf.setMinimumIntegerDigits(3);
+System.out.println(nf.format(1.234));
+System.out.println(nf.format(123456.789));
+}}
+Output:
+123.4
+123.457
+123.400
+123.457
+1.234
+456.789
+001.234
+456.789
+
+
+
+3. DateFormat
+-------------
+****Various countries follow various styles to represent Date. We can format the date
+according to a particular locale by using DateFormat class.
+
+****DateFormat class present in java.text package and it is an abstract class.
+
+Getting DateFormat object for default Locale:
+DateFormat class defines the following methods for this purpose.
+
+public static DateFormat getInstance();
+public static DateFormat getDateInstance();
+public static DateFormat getDateInstance(int style);
+public static DateFormat getDateTimeInstance();
+public static DateFormat getDateTimeInstance(int datestyle, int timestyle)
+public static DateFormat getDateTimeInstance(int datestyle,int timestyle,Locale l)
+datestyle= 0 to 3
+time style = 0 to 3
+DateFormat.FULL = 0
+DateFormat.LONG = 1
+DateFormat.MEDIUM = 2
+DateFormat.SMALL = 3
+
+The dafault style is Medium style
+
+public static DateFormat getDateInstance(int style, Locale l);
+Once we got DateFormat object we can format and parse Date by using the following methods.
+public String format(Date date); --> To convert the date from java form to locale specific string form.
+public Date parse(String source)throws ParseException --> To convert the date from locale specific form to java form.
+
+System.out.println("full form is:"+DateFormat.getDateInstance(0).format(new Date()));
+System.out.println("long form is:"+DateFormat.getDateInstance(1).format(new Date()));
+System.out.println("medium form is:"+DateFormat.getDateInstance(2).format(new Date()));
+System.out.println("short form is:"+DateFormat.getDateInstance(3).format(new Date()));
+
+Output:
+Full form is: Wednesday, July 20, 2011
+Long form is: July 20, 2011
+Medium form is: Jul 20, 2011
+Short form is: 7/20/11
+
+
+
+DateFormat UK=DateFormat.getDateInstance(0,Locale.UK);
+DateFormat US=DateFormat.getDateInstance(0,Locale.US);
+DateFormat ITALY=DateFormat.getDateInstance(0,Locale.ITALY);
+
+System.out.println("UK style is :"+UK.format(new Date()));
+System.out.println("US style is :"+US.format(new Date()));
+System.out.println("ITALY style is :"+ITALY.format(new Date()));
+
+Output:
+UK style is: Wednesday, 20 July 2011
+US style is: Wednesday, July 20, 2011
+ITALY style is: mercoled 20 luglio 2011
+
+DateFormat
+ITALY=DateFormat.getDateTimeInstance(0,0,Locale.ITALY);
+System.out.println("ITALY style is:"+ITALY.format(new Date()));
+
+
+
+Basics
+-----
+What is the difference between Jar, War and Ear ?
+
+Jar (java archive): Represents a group of ".class files".
+
+War (web archive): Represents a web application which may contains Servlets, JSP, HTML
+pages, JavaScript files etc.
+If we maintain web application in the form of war file, the project delevering ,
+transportation and deployment will become easy.
+
+Ear (Enterprise archive): it represents an enterprise application which may contain
+Servlets, JSP, EJB'S, JMS component etc.
+
+
+In generally an ear file consists of a group of war files and jar files.
+Ear=war+ jar
+
+
+
+To create a jar file:
+D:\Enum>jar -cvf praveen.jar Beer.class Test.class X.class
+D:\Enum>jar -cvf praveen.jar *.class
+D:\Enum>jar -cvf praveen.jar *.*
+
+To extract a jar file:
+D:\Enum>jar -xvf bhaskar.jar
+To display table of contents of a jar file:
+D:\Enum>jar -tvf bhaskar.jar
+
+Example 5:
+public class BhaskarColorFulCalc{
+public static int add(int x,int y){
+return x*y;
+}
+
+public static int multiply(int x,int y){
+return 2*x*y;
+}}
+
+Analysis:
+C:\>javac BhaskarColorFulCalc.java
+C:\>jar -cvf bhaskar.jar BhaskarColorFulCalc.class
+
+
+System properties:
+--------------------
+For every system some persistence information is available in the form of system
+properties. These may include name of the os, java version, vendor of jvm ,
+userCountry etc.
+
+*****
+  We can get system properties by using getProperties() method of system class.
+*****
+
+import java.util.*;
+class Test{
+public static void main(String args[]){
+//Properties is a class in util package.
+//here getPropertes() method returns the Properties object.
+
+Properties p=System.getProperties();
+p.list(System.out);
+
+}}
+
+*****How to set system property from the command prompt:
+We can set a system property explicitly from the command prompt by using –D option
+
+****
+java -Dcourse=scjp Test
+***
+The main advantage of setting System Properties is we can customize the behaviour of
+java program.
+
+
+class Test {
+public static void main(String args[]) {
+String course=System.getProperty("course");
+if(course.equals("scjp")) {
+System.out.println("SCJP Information");
+}
+else{
+System.out.println("other course information");
+}}
+output:
+c:> java -Dcourse=scjp Test
+SCJP Information
+c:> java -Dcourse=scwcd Test
+other course information
+
+
+
+NaN(Not a Number) in integral arithmetic (byte , short , int , long) there is no
+way to represent undefine the results. Hence the result is undefined we will get
+ArithmericException in integral arithmetic
+System.out.println(0/0); // output RE : ArithmeticException / by zero
+But floating point arithmetic (float , double) there is a way to represents
+undefined the results .
+For the Float , Double classes contains a constant NaN , Hence the result is
+undefined we won't get ArithmeticException in floating point arithmetics .
+System.out.println(0.0/0.0); // output : NaN
+System.out.println(-0.0/0.0); // output : NaN
+19. For any 'x' value including NaN , the following expressions returns false
+
+
+What is the difference between == operator and .equals( ) method ?
+In general we can use .equals( ) for content comparision where as == operator
+for reference comparision
+String s1=new String("ashok");
+String s2=new String("ashok");
+System.out.println(s1==s2); //false
+System.out.println(s1.equals(s2)); //true
+
+
+
+Difference between ClassNotFoundException & NoClassDefFoundError :
+-----------------------------------------------------------------
+1. For hard coded class names at Runtime in the corresponding .class files not
+available we will get NoClassDefFoundError , which is unchecked
+Test t = new Test( );
+In Runtime Test.class file is not available then we will get NoClassDefFoundError
+
+2. For Dynamically provided class names at Runtime , If the corresponding .class
+files is not available then we will get the RuntimeException saying ClassNotFoundException
+Ex : Object o=Class.forname("Test").newInstance( );
+At Runtime if Test.class file not available then we will get the
+ClassNotFoundException , which is checked excep
+
+
+In how many ways we can create an object ? (or) In how many ways get an object in java ?
+1. By using new Operator :
+2. Test t = new Test();
+3. By using newInstance() :(Reflection Mechanism)
+4. Test t=(Test)Class.forName("Test").newInstance();
+5. By using Clone() :
+6. Test t1 = new Test();
+7. Test t2 = (Test)t1.Clone();
+8. By using Factory methods :
+9. Runtime r = Runtime.getRuntime();
+10. DateFormat df = DateFormat.getInstance();
+11. By using Deserialization :
+12. FileInputStream fis = new FileInputStream("abc.ser");
+13. ObjectInputStream ois = new ObjectInputStream(fis);
+14. Test t = (Test)ois.readObject();
+
+
+instanceof
+---------
+instanceof an operator which can be used to check whether the
+given object is perticular type or not We know at the type at beginning it is available
+
+
+isInstance( )
+----------
+isInstance( ) is a method , present in class Class , 
+we can use isInstance( ) method to checked whether the given object is perticular type or not
+We don't know at the type at beginning it is available Dynamically at Runtime
+
+
+
+Assertions
+----------
+
+Introduction:
+1. The most common way of debugging is uses of sops. But the main disadvantage
+of sops is after fixing the bug compulsory we should delete extra added sops
+otherwise these sops also will be executed at runtime which impacts performance
+of the system and disturbs logging mechanism.
+2. To overcome these problems sun people introduced assertions concept in 1.4
+versions.
+3. The main advantage of assertions over sops is based on our requirement we can
+enable or disable assertions and by default assertions are disable hence after
+fixing the bug it is not required to delete assert statements explicitly.
+4. Hence the main objective of assertions is to perform debugging.
+5. Usually we can perform debugging either in development environment or Test
+environment but not in production environment hence assertions concept is
+applicable for the development and test environments but not for the production.
+
+
+
+Types of assert statements:
+There are 2 types of asset statements.
+1. Simple version
+2. Argumented version
+Simple version:
+Syntax: assert(b);//b should be boolean type.
+If 'b' is true then our assumption is correct and continue rest of the program
+normally.
+If 'b' is false our assumption is fails and hence stop the program execution by
+raising assertion error.
+
+
+Example:
+class Test
+{
+public static void main(String[] args)
+{
+int x=10;
+;;;;;;;;;
+assert(x>10);
+;;;;;;;;;
+System.out.println(x);
+}
+}
+Output:
+javac Test.java
+java Test
+10
+java -ea Test(invalid)
+
+R.E: AssertionError
+Note: By default assertions are disable and hence they won't be executed by default we
+have to enable assertions explicitly by using -ea option.
+
+Argumented version:
+
+By using argumented version we can argument some extra information with the
+assertion error.
+Syntax: assert(b):e;
+'b' should be boolean type.
+'e' can be any type.
+
+assert(x>10):"here x value should be >10 but it is not";
+
+Conclusion 1:
+assert(b):e;
+'e' will be evaluated if and only if 'b' is false that is if 'b' is true then 'e' won't be
+evaluated.
+
+Conclusion 2:
+assert(b):e;
+For the 2nd argument we can take method call also but void type method call not
+allowed.
+
+Various runtime flags:
+1. -ea: To enable assertions in every non system class(user defined classes).
+-enableassertions: It is exactly same as -ea.
+2. -da: To disable assertions in every non system class.
+-disableassertions: It is exactly same as -da.
+3. -esa: To enable assertions in every system class(predefined classes or application
+classes).
+-enablesystemassertions: It is exactly same as -esa.
+4. -dsa: To disable assertions in every system class.
+-disablesystemassertions: It is exactly same as -dsa.
+
+
+For validating public method arguments usage of assertions is always
+inappropriate, because outside person is not aware whether assertions are
+enabled or disabled in our local system.
+While perform debugging if any place where the control is not allow to reach
+then that is the best place to use assertions.
+It is always appropriate to use assertions for validating private method
+arguments.
+It is always inappropriate to use assertions for validating command line
+arguments because these are arguments to public method main.
+
+
+
+Assertion Error:
+----------------
+It is always appropriate to use assertions for validating private method
+arguments.
+It is always inappropriate to use assertions for validating command line
+arguments because these are arguments to public method main.
+
+try {
+assert(x>10);
+}
+catch (AssertionError e) {
+System.out.println("not a good programming practice to catch AssertionError");
+}

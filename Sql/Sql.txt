@@ -1,0 +1,103 @@
+When ever we are using Group_by clause then where condition will never work 
+select sum (pay) from employee where depid =2  --> but in this condition on it will work 
+because here only we are using aggreegate function with out column 
+
+select sum (pay) from employee where depid =2  --> it will work
+select sum(pay),depid from employee where depid =2   --> will never work we need to use groupby clause 
+
+for where condition we need to use having clause inthis case 
+select sum(pay), depid  from employees  group by depid  having depid = 2 -- it will work
+
+
+Order by clasue 
+--------------
+Aggreagte function with order by clause will never work
+select sum(pay)  from employees  order by  depid --> it will never work 
+
+Homany colums we are using IN  same columns we should use 
+select sum(pay)  from employees group by depid order by  depid
+
+---------------------------------------------------------------------------
+
+DDL(Data Definition Language) : DDL or Data Definition Language actually consists of the SQL commands that can be used to define the database schema. It simply deals with descriptions of the database schema and is used to create and modify the structure of database objects in database.
+Examples of DDL commands:
+
+CREATE – is used to create the database or its objects (like table, index, function, views, store procedure and triggers).
+DROP – is used to delete objects from the database.
+ALTER-is used to alter the structure of the database.
+TRUNCATE–is used to remove all records from a table, including all spaces allocated for the records are removed.
+COMMENT –is used to add comments to the data dictionary.
+RENAME –is used to rename an object existing in the database.
+
+DML(Data Manipulation Language) : The SQL commands that deals with the manipulation of data present in database belong to DML or Data Manipulation Language and this includes most of the SQL statements.
+Examples of DML:
+SELECT – is used to retrieve data from the a database.
+INSERT – is used to insert data into a table.
+UPDATE – is used to update existing data within a table.
+DELETE – is used to delete records from a database table.
+
+DCL(Data Control Language) : DCL includes commands such as GRANT and REVOKE which mainly deals with the rights, permissions and other controls of the database system.
+Examples of DCL commands:
+GRANT-gives user’s access privileges to database.
+REVOKE-withdraw user’s access privileges given by using the GRANT command.
+
+TCL(transaction Control Language) : TCL commands deals with the transaction within the database.
+Examples of TCL commands:
+COMMIT– commits a Transaction.
+ROLLBACK– rollbacks a transaction in case of any error occurs.
+SAVEPOINT–sets a savepoint within a transaction.
+SET TRANSACTION–specify characteristics for the transaction.
+
+------------------------------------------------------------------------
+
+
+Difference between DELETE and TRUNCATE Statements:
+
+DELETE Statement: This command deletes only the rows from the table based on the condition given in the where clause or deletes all the rows from the table if no condition is specified. But it does not free the space containing the table.
+
+TRUNCATE statement: This command is used to delete all the rows from the table and free the space containing the table.
+
+
+TRUNCATE
+==========
+TRUNCATE is a DDL command
+TRUNCATE is executed using a table lock and whole table is locked for remove all records.
+We cannot use Where clause with TRUNCATE.
+TRUNCATE removes all rows from a table.
+Minimal logging in transaction log, so it is performance wise faster.
+TRUNCATE TABLE removes the data by deallocating the data pages used to store the table data and records only the page deallocations in the transaction log.
+Identify column is reset to its seed value if table contains any identity column.
+To use Truncate on a table you need at least ALTER permission on the table.
+Truncate uses the less transaction space than Delete statement.
+Truncate cannot be used with indexed views.
+
+DELETE
+=========
+DELETE is a DML command.
+DELETE is executed using a row lock, each row in the table is locked for deletion.
+We can use where clause with DELETE to filter & delete specific records.
+The DELETE command is used to remove rows from a table based on WHERE condition.
+It maintain the log, so it slower than TRUNCATE.
+The DELETE statement removes rows one at a time and records an entry in the transaction log for each deleted row.
+Identity of column keep DELETE retain the identity.
+To use Delete you need DELETE permission on the table.
+Delete uses the more transaction space than Truncate statement.
+Delete can be used with indexed views.
+
+DROP
+=====
+The DROP command removes a table from the database.
+All the tables' rows, indexes and privileges will also be removed.
+No DML triggers will be fired.
+The operation cannot be rolled back.
+DROP and TRUNCATE are DDL commands, whereas DELETE is a DML command.
+DELETE operations can be rolled back (undone), while DROP and TRUNCATE operations cannot be rolled back.
+
+
+-------------------------------------------------------------------------------------------------------
+
+
+
+
+
+

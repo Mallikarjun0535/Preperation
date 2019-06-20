@@ -1,0 +1,277 @@
+
+Spring Configuration and Starting the Container
+----------------------------------------------
+In this example, class AppRunner, is responsible for defining and wiring dependencies. 
+In other words it's a Spring specific configuration class. 
+Our example demonstrates Java-based Configuration which is the alternative to XML based configuration.
+The same class is also responsible for starting the Spring container from the main method.
+
+@Configuration
+public class AppRunner {
+
+    @Bean
+    public HelloWorldService createHelloWorldService() {
+        return new HelloWorldSericeImpl();
+    }
+
+    @Bean
+    public HelloWorldServiceClient createClient() {
+        return new HelloWorldServiceClient();
+    }
+
+    public static void main(String... strings) {
+        AnnotationConfigApplicationContext context =
+                                new AnnotationConfigApplicationContext(AppRunner.class);
+        HelloWorldServiceClient bean = context.getBean(HelloWorldServiceClient.class);
+        bean.showMessage();
+    }
+
+}
+
+The annotations @Configuration and @Bean
+---------------------------------------
+We used annotation @Configuration to tell the container that beans are defined in AppRunner.
+The methods which returns bean instances are annotated with @Bean, 
+which is another directive for the container so that it will know what objects should be registered as beans.
+
+
+
+What is AnnotationConfigApplicationContext?
+-------------------------------------------
+This class implements ApplicationContext. 
+The container gets its instructions on what objects to instantiate,
+configure, and assemble by reading configuration metadata.
+
+In our example we passed our config java class to the AnnotationConfigApplicationContext constructor.
+This class implements AnnotationConfigRegistry as well, so it accepts annotated classes as input.
+
+Once instantiated, a spring application context object represents runtime reference of the spring container.
+Using the context object we can access registered beans. It's read-only but can be refreshed/reloaded whenever needed.
+
+---------------------------------------------------------------------------------------------------------------------------------
+
+Spring - Configuration Metadata:
+*******************************
+Spring configuration metadata is to tell Spring container how to initiate, 
+configure, wire and assemble the application specific objects. 
+Since it's first release in 2002 to the latest release, spring has provided three ways of configurations:
+
+XML-based Configuration : 
+-------------------------
+All configurations are in one or multiple XML files. 
+This is the most verbose way of configuration. 
+Huge projects require tedious amount of XML which is difficult to manage.
+
+Annotation-based configuration :
+------------------------------
+Spring 2.5 introduces annotation-based configuration.
+We still have to write XML files but just to indicate "component-scan" on the packages of annotated classes.
+
+Java-based configuration (JavaConfig):
+---------------------------------------
+Starting with Spring 3.0, a pure-Java means of configuring container was provided. 
+We don't need any XML with this method of configuration. 
+JavaConfig provides a truly object-oriented mechanism for dependency injection, 
+meaning we can take full advantage of reusability, inheritance and polymorphism in the configuration code. 
+Application developer has complete control over instantiation and dependency injection here.
+
+
+Bootstrapping Spring Container
+--------------------------------
+In Java-based spring configuration, the container can be bootstrapped using either 
+****AnnotationConfigApplicationContext or for web application: AnnotationConfigWebApplicationContext.
+
+new AnnotationConfigApplicationContext(MyAppConfig.class);
+
+We can also specify the qualified package name containing @Configuration annotated classes:
+we can have multiple configuration classes in a single package
+new AnnotationConfigApplicationContext("spring.example");
+
+To separate the concerns or to achieve modularization, we can define multiple configuration classes
+new AnnotationConfigApplicationContext( AppConfig.class, DataSourceConfig.class );
+
+
+DI in Configuration Classes
+--------------------------
+The configuration classes themselves are registered as beans to the Spring container. 
+That means, we can do whatever we do with a normal spring bean.
+For example we can use @Autowire to have Spring to perform DI in them. 
+In the following example we are going to inject a configuration class to another one.
+
+EXAMPLE ************
+
+class Client {
+    private DataSourceBean dataSourceBean;
+
+    Client(DataSourceBean dataSourceBean){
+        this.dataSourceBean = dataSourceBean;
+    }
+
+    public void showData() {
+        System.out.println(dataSourceBean.getData());
+    }
+}
+
+class DataSourceBean {
+
+    public String getData() {
+        return "some data";
+    }
+}
+
+
+@Configuration
+class DataSourceConfig {
+
+    @Bean
+    DataSourceBean dataSourceBean() {
+        return new DataSourceBean();
+    }
+}
+
+@Configuration
+public class AppConfig {
+    @Autowired
+    private DataSourceConfig dataSourceConfig;
+	
+    //We can also inject  DataSourceBean directly to  AppConfig, rather than injecting  DataSourceConfig class:
+   //@Autowired
+   // private DataSourceBean dataSourceBean;
+  
+    @Bean
+    Client clientBean() {
+        return new Client(dataSourceConfig.dataSourceBean());
+    }
+
+    public static void main(String[] args) {
+        AnnotationConfigApplicationContext context =
+          new AnnotationConfigApplicationContext(AppConfig.class, DataSourceConfig.class);
+        context.getBean(Client.class).showData();
+    }
+}
+
+
+
+Constructor-base DI in the configuration class
+----------------------------------------------
+Starting from Spring 4.3, configuration classes also support constructor DI, 
+please see an example here to see in what kind of scenarios we should use that feature.
+@Configuration
+public class SpringConfig {
+
+    @Bean
+    public String something(){
+        return new String(System.nanoTime());
+    }
+
+        public static void main(String... strings) {
+            AnnotationConfigApplicationContext context =
+                    new AnnotationConfigApplicationContext(SpringConfig.class);
+            System.out.println("Spring container started and is ready");
+            SpringConfig bean = context.getBean(SpringConfig.class);
+            System.out.println(bean.something());
+            System.out.println(bean.something());
+        }
+}
+
+
+@ComponentScan
+--------------
+So far we saw JavaConfig using factory methods (annotated with @Bean) to provide bean implementation.
+Using this approach, we have to create the bean implementation instances ourselves. Instead of this factory approach, 
+we can have spring to scan the provided packages and create all implementation automatically and then inject the dependencies. 
+We can do that by using @ComponentScan along with @Configuration. 
+
+There too we can mix the factory approach along with scan approach.
+In factory approach we annotate classes with @Configuration having methods annotated with @Bean which return bean instances).
+For component scanning to work we must annotate our beans with one of the stereotype annotations
+Component
+Controller
+Repository
+Service
+
+you can annotate your component classes with @Component, 
+but by annotating them with @Repository, @Service, or @Controller instead, 
+your classes are more properly suited for processing by tools or associating with aspects. 
+For example, these stereotype annotations make ideal targets for pointcuts.
+It is also possible that @Repository, @Service, and @Controller 
+may carry additional semantics in future releasesof the Spring Framework. 
+Thus, if you are choosing between using @Component or @Service for your service layer, 
+@Service is clearly the better choice.
+
+Along with above annotations we can tag our beans with any of @Lazy, @DependsOn, @Scope etc
+to specify their specific behavior (as we saw in previous examples)
+
+"com.example" willl discover the beans annotated with @Component and other stero type annotations
+his is alternative using of <context:component-scan> 
+@Configuration
+@CompnentScan("com.example")
+public class MyAppConfig{
+
+}
+
+
+@Import Annotation 
+------------------
+Previously we providing all @Configuration classes to the constructor of AnnotationConfigApplicationContext.
+The @Import annotation provides this kind of support. It is the equivalent to the  <import/> element in a bean XML file.
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+	http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
+ 
+	<import resource="config/customer.xml"/>
+        <import resource="config/scheduler.xml"/>
+ 
+</beans>
+
+
+@Configuration
+@Import({ CustomerConfig.class, SchedulerConfig.class })
+public class AppConfig {
+
+}
+
+
+
+@Bean Annotation 
+---------------
+
+name:
+By default Spring container associate the bean with method name .
+A bean can be associated with multiple names, the extra ones are considered aliases.
+Specifying a unique meaningful name to a bean is necessary 
+
+if the configuration provides more than one implementations for a bean. 
+In that case, we have to use @Qualifier at the injection point 
+which has an option to specify the bean name.
+
+@Configuration
+public class AppConfig {
+
+    @Bean(name = "myBean")
+    public MyBean createBean() {
+       ......
+    }
+}
+        
+autowire :
+The autowiring mode.
+
+Autowire.NO : This is the default. In this case, we have to explicitly use @Autowired at injection point.
+
+Autowire.BY_TYPE : we don't need @Autowired at the injection point, 
+given that there is only one bean available for the injection. In this mode of autowiring, the field injection doesn't work. There must be a setter.
+
+Autowire.BY_NAME : If this mode of autowiring is specified and injection provider bean has specified name element with the some value in it's @Bean annotation, we have to use @Qualifier along with @Autowired at injection point. An example here.
+
+
+
+
+
+<bean id="customerService" class="com.mkyong.customer.services.CustomerService" 
+		init-method="initIt" destroy-method="cleanUp">
+   		
+		<property name="message" value="i'm property message" />
+	</bean>

@@ -1,0 +1,75 @@
+1)int x = 0786--->gives compile time error (when we keep Zero any nubmber it will consider as octol) valid upto 0777
+2)From java 1.7 underscore is valid in integers 4_12_122
+3)static local varibles we cant create in java
+4)for(int i = 0; 1; i++) --> it will throw compile time error (nteger value expression cannot be placed where a boolean is expected in Java. ) for(int i = 0; true; i++) {
+5)char ch ='bc' --> multiple charcters are not valid  ,   char ch = 65536 -- invalid; 
+6)local varibles stored in stack..... java shuould not provide default values for local varibles.
+7)methodOne(int a,int... b) //valid var args method
+  methodOne(int... a,int b) //(invalid)
+8)static final syncronized strictfp public void main(String... ask){ --> main method allowing modifiers
+9)Inheritance concept is applicable for static methods including main() method hence while executing child class if the child class doesn't contain main() method then
+  the parent class main() method will be executed.
+10)From 1.7 version onwards to start program execution compulsory main method should
+   be required, hence even though the class contains static block if main method not
+   available then won't be executed
+11)Math.pow(2,exponent)  returns double value  
+   so we need to change the Double d = Math.pow(2,exp);
+   int s = d.intValue(); ---> it will convert the double value into the int value.
+12)how to find an odd number if(i%2 != 0) --> then it is an odd number
+
+13)for reading a data line by line using scanner 
+	while(scanner.hasNext()){ 
+        System.out.println(lineNumber++ +" "+scanner.nextLine()); 
+        }
+   from file  BufferedReader b = new BufferedReader(new FileReader(f));
+	 while ((readLine = b.readLine()) != null) {
+                System.out.println(readLine);
+         }
+14) finding the day of a week using java8
+ 	   LocalDate
+	   LocalTime
+	   LocalDateTime
+	   ZonedDateTime
+	   LocalDate ld = LocalDate.of(Integer.parseInt(year),Integer.parseInt(month),Integer.parseInt(day));
+           ld.getDayOfWeek().toString();
+15)how to convery currency using Numberformat class 
+	Locale indiaLocale = new Locale("en", "IN");
+        /* Create NumberFormats using Locales */
+        NumberFormat us     = NumberFormat.getCurrencyInstance(Locale.US);
+16) when we want to compare the strings and  make it the first charachter as upper case letter.
+    int c = A.compareTo(B); 
+        if(c<0){
+            System.out.println("No");
+        }else if (c > 0){
+            System.out.println("Yes");
+        }else{
+            System.out.println("No");
+        }
+        A = A.substring(0,1).toUpperCase() + A.substring(1,A.length());
+        B = B.substring(0,1).toUpperCase() + B.substring(1,B.length());
+        System.out.println(A+" "+B);
+
+17) String Builder Class we cant apply the split method.
+18) See other file  bubble sort.
+19) String class doesnt have reverse method we should use Stringbuilder;
+
+20)*** nonstatic varible cannot be REFERENCED in Static Block.
+
+21)The only applicable modifier for local variables is final. If we are using any other
+modifier we will get compile time error(private/public/protectected/static/transiant/volatile --->invalid) 
+
+22)NoSuchMethodError: main --> when jvm will not find properly main method 
+
+23)Overloading of the main() method is possible but JVM always calls string[] argument
+main() method only.
+
+24)Inheritance concept is applicable for static methods including main() method
+hence while executing child class if the child class doesn't contain main() method then
+the parent class main() method will be executed.
+
+25) from 1.5 we can add enum in swith statement 
+    from 1.7 we can add String in swith statenment
+
+26)We can't perform nesting of increment or decrement operator, other wise we will
+get compile time error
+

@@ -1,0 +1,218 @@
+enum Vs Enum Vs Enumeration : 
+enum : enum is a keyword which can be used to define a group of named constants.  
+Enum :  It is a class present in java.lang package .  Every enum in java is the direct child class of this class. Hence this Enum class acts as base class for all java enum's .  
+Enumeration : It is a interface present in java.util package . We can use Enumeration to get the objects one by one from the Collections.  
+
+Enumclass Examples
+-------------------------------------------------------------------------------------------------
+Enum concept introduced in 1.5 versions.  When compared with old languages enum java's enum is more powerful.
+By using enum we can define our own data types which are also come enumerated data types. 
+***Every enum constant is a reference variable to that enum type object.
+Every enum constant is implicitly public static final always.
+Every enum constant internally static hence we can access by using "enum name".
+
+Internally inside every enum toString() method is implemented to return name of the constant.
+Every enum in java is the direct child class of java.lang.Enum class hence it is not possible to extends any other enum. 
+Every enum is implicitly final hence we can't create child enum.
+Because of above reasons we can conclude inheritance concept is not applicable for enum's explicitly.
+Hence we can't apply extends keyword for enum's .
+But enum can implement any no. Of interfaces simultaneously. 
+
+If we declare enum outside the class the allowed modifiers are : 
+public 
+default  
+strictfp
+
+If we declare enum inside a class then the allowed modifiers are :  
+public    
+protected  
+strictfp       
+static 
+private 
+default
+
+Java.lang.Enum class:  
+Every enum in java is the direct child class of java.lang.Enum class. 
+Hence this class acts as base class for all java enums. 
+It is abstract class and it is direct child class of "Object class" 
+It implements Serializable and Comparable.  
+                                                                    
+values() method: 
+Every enum implicitly contains a static values() method to list all constants of enum.  
+
+ordinal() method: 
+Within enum the order of constants is important we can specify by its ordinal value. 
+We can find ordinal value(index value) of enum constant by using ordinal() method.  
+Example: public final int ordinal();  
+
+Valueof(String)
+
+When compared with old languages enum, java's enum is more powerful because in addition to constants
+we can take normal variables, constructors, methods etc which may not possible in old languages. 
+Inside enum we can declare main method and even we can invoke enum directly from the command prompt. 
+Enum can contain constructor.
+ 
+****Every enum constant represents an object of that enum class
+which is static hence all enum constants will be created at the time of class loading automatically and 
+hence constructor will be executed at the time of enum class loading for every enum constants. 
+public enum Level {
+	HIGH,MEDIUM,LOW
+
+ Level(){
+  System.out.println("Constructor called.");
+ }
+}
+
+public class Practise {
+	public static void main(String[] args) {
+		for(Level e : Level.values()) {
+			System.out.println(e);
+		}
+	}
+}
+
+Output:
+Constructor called.
+Constructor called.
+Constructor called.
+HIGH
+MEDIUM
+LOW
+
+***We can't create enum object explicitly and hence we can't invoke constructor directly. 
+Example:  
+enum Beer{ KF,KO,RC,FO; Beer(){ System.out.println("constructor called"); } } class Test{ public static void main(String args[]){ Beer b=new Beer(); System.out.println(b); }} Output: Compile time error. D:\Enum>javac Test.java Test.java:9: enum types may not be instantiated Beer b=new Beer(); 
+
+
+***Inside enum we can take both instance and static methods but it is not possible to take abstract methods.
+enum Beer { KF(100),KO(70),RC(65),Fo(90),KALYANI; int price; Beer(int price){ this.price=price; } Beer() { this.price=125; } public int getPrice() { return price; } }
+
+****Case 1:  
+Every enum constant represents an object hence whatever the methods we can apply on the normal objects we can apply the same methods on enum constants also.
+
+Which of the following expressions are valid ?  
+Beer.KF==Beer.RC----------------------------> false 
+Beer.KF.equals(Beer.RC) ------------------->   false 
+Beer.KF  <  Beer.RC------------------------------>  invalid 
+Beer.KF.ordinal() < Beer.RC.ordinal()------>  valid
+
+
+****
+Note : If we want to use classname directly from outside package we should write normal import ,
+ If we want to access static method or static variable without classname directly then static import is required. 
+
+public enum Fish { STAR,GUPPY; } 
+package pack3; 
+//import pack1.Fish; 
+import pack1.*; 
+//import static pack1.Fish.GUPPY; 
+import static pack1.Fish.*; 
+class B { public static void main(String args[]){ Fish f=Fish.STAR; System.out.println(GUPPY); } } Note : If we want to use classname directly from outside package we should write normal import , If we want to access static method or static variable without classname directly then static import is required. 
+
+@Getter
+@AllArgsConstructor
+1)  public enum ApplicationStatus {
+
+    APPLICATION_INCOMPLETE(3419, "Application Incomplete"),
+    CANCELLED(3423, "Cancelled"),
+    NOT_SELECTED(3425, "Not Selected"),
+    SELECTED(3426, "Selected"),
+    HIRED(11541, "Hired"),
+    APPLICATION_STATUS_NOT_AVAILABLE(11542, "Application Status Not Available"),
+    RECEIVED(12001, "Received"),
+    REVIEWED(12002, "Reviewed"),
+    REFERRED(12003, "Referred"),
+    NOT_REFERRED(12004, "Not Referred"),
+    NOT_HIRED(12005, "Not Hired");
+
+    private final int usajobsStatusCode;
+    private final String description;
+
+    public static Optional<ApplicationStatus> fromInt(final int usajobsStatusCode) {
+        return Arrays.stream(values()).filter(x -> x.getUsajobsStatusCode() == usajobsStatusCode).findFirst();
+    }
+
+}
+2) public enum Name {
+        EMPLOYEE_DATA("EMPDATA"),
+        USER_EDIT("USEREDIT"),
+        USER_ROLE("USERROLE"),
+        CASE("CASE"),
+        RECRUITMENT_REQUEST("RECREQ"),
+        FORM("FORM"),
+        APPLICANT_LIST("APPLIST");
+
+        private String name;
+
+        Name(final String name) {
+            this.name = name;
+        }
+
+        public String getName() {
+            return this.name;
+        }
+    }
+
+3) @AllArgsConstructor
+    @Getter
+    public enum Visibility {
+
+        HR_ONLY("H", "HR_ONLY"),
+        HR_AND_EMPLOYEE("B", "HR_AND_EMPLOYEE"),
+        EMPLOYEE_ONLY("R", "EMPLOYEE_ONLY");
+
+        private final String visibilityFlag;
+        private final String visibilityDesc;
+
+        public static Visibility fromVisibilityFlag(final String visbility) {
+            return Arrays.stream(values()).filter(x -> x.getVisibilityFlag().equalsIgnoreCase(visbility)).findFirst()
+                    .orElseThrow(() -> {
+                        return new IllegalArgumentException(String.format("Invalid Visibility code=%s", visbility));
+                    });
+        }
+    }
+4)  public enum RoleType {
+        HR,
+        EMP
+    }
+
+5) public enum MessageType {
+        EMAIL("E"),
+        LETTER("L");
+
+        private String value;
+
+        public static MessageType fromValue(final String value) {
+            if (null == value || "".equals(value.trim())) {
+                return LETTER;
+            }
+
+            return Arrays.stream(values()).filter(x -> x.getValue().equals(value)).findFirst().orElseThrow(() -> {
+                return new IllegalArgumentException(String.format("Invalid MessageType type=%s", value));
+            });
+        }
+    }
+  }
+
+6)public enum JobStatus {
+    DRAFT("D", "Draft"),
+    POSTED("P", "Posted"),
+    AMENDED("A", "Amended"),
+    CANCELLED("C", "Cancelled");
+
+    @Getter
+    private final String code;
+
+    @Getter
+    private final String desc;
+
+    JobStatus(final String code, final String desc) {
+        this.code = code;
+        this.desc = desc;
+    }
+
+    public static Optional<JobStatus> fromString(final String status) {
+        return Arrays.stream(values()).filter(x -> x.getCode().equalsIgnoreCase(status)).findFirst();
+
+    }
+}

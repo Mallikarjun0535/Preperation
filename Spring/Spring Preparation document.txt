@@ -1,0 +1,264 @@
+// create and configure beans
+ApplicationContext context = new ClassPathXmlApplicationContext("services.xml", "daos.xml");
+// retrieve configured instance
+PetStoreService service = context.getBean("petStore", PetStoreService.class);
+// use configured instance
+List<String> userList = service.getUsernameList();
+
+
+The ApplicationContext is the interface for an advanced factory capable of maintaining 
+a registry of different beans and their dependencies. Using the method T getBean(String name, Class<T> requiredType)
+you can retrieve instances of your beans.
+
+
+Annotation based constructor injection.
+---------- ----- ----------- ----------
+public class ExampleBean {
+
+    // Fields omitted
+
+    @ConstructorProperties({"years", "ultimateAnswer"})
+    public ExampleBean(int years, String ultimateAnswer) {
+        this.years = years;
+        this.ultimateAnswer = ultimateAnswer;
+    }
+}
+
+Setter based injection
+----------------------
+public class SimpleMovieLister {
+
+    // the SimpleMovieLister has a dependency on the MovieFinder
+    private MovieFinder movieFinder;
+
+    // a setter method so that the Spring container can inject a MovieFinder
+    public void setMovieFinder(MovieFinder movieFinder) {
+        this.movieFinder = movieFinder;
+    }
+
+    // business logic that actually uses the injected MovieFinder is omitted...
+}
+
+@Required
+---------
+Note that use of the @Required annotation on a setter method can be used to make the property a required dependency.
+
+@Bean methods in Java-based @Configuration classes. 
+These sources are then converted internally into instances of BeanDefinition and used to 
+load an entire Spring IoC container instance.
+
+
+
+1.3. Bean overview
+------------------
+A Spring IoC container manages one or more beans. 
+These beans are created with the configuration metadata that you supply to the container, 
+for example, in the form of XML <bean/> definitions.
+
+Property					Explained in
+class           			Instantiating beans
+name            			Naming beans
+scope           			Bean scopes
+constructorarguments  		Dependency Injection
+properties      			Dependency Injection
+autowiring mode  			Autowiring collaborators
+lazy-initialization mode  	Lazy-initialized beans
+initialization method   	Initialization callbacks
+destruction method    		Destruction callbacks
+
+
+
+DefaultListableBeanFactory
+---------------------------
+the ApplicationContext implementations also permit the registration of existing objects that are created outside the container, by users.
+This is done by accessing the ApplicationContext’s BeanFactory via the method getBeanFactory() 
+which returns the BeanFactory implementation DefaultListableBeanFactory. 
+DefaultListableBeanFactory supports this registration through the methods registerSingleton(..) and registerBeanDefinition(..)
+
+A Spring application can register a BeanDefinition by using the following method of BeanDefinitionRegistry:
+void registerBeanDefinition(String beanName, BeanDefinition beanDefinition)
+
+1) Using GenericBeanDefinition
+   ---------------------------
+
+public class MyBean {
+  private Date date;
+  public void doSomething () {
+      System.out.println("from my bean, date: " + date);
+  }
+  public void setDate (Date date) {
+      this.date = date;
+  }
+}
+
+
+DefaultListableBeanFactory context = new DefaultListableBeanFactory();
+
+      GenericBeanDefinition gbd = new GenericBeanDefinition();
+      gbd.setBeanClass(MyBean.class);
+
+      MutablePropertyValues mpv = new MutablePropertyValues();
+      mpv.add("date", new Date());
+
+      //alternatively we can use:
+      // gbd.getPropertyValues().addPropertyValue("date", new Date());
+      gbd.setPropertyValues(mpv);
+
+      context.registerBeanDefinition("myBeanName", gbd);
+
+      MyBean bean = context.getBean(MyBean.class);
+      bean.doSomething();
+
+
+2)Using BeanDefinitionBuilder
+  ---------------------------
+Only difference here is, BeanDefinitionBuilder uses builder pattern.
+
+public class MyBean {
+  private String str;
+
+  public void setStr (String str) {
+      this.str = str;
+  }
+
+  public void doSomething () {
+      System.out.println("from MyBean " + str);
+  }
+}
+
+
+
+DefaultListableBeanFactory beanFactory =
+                new DefaultListableBeanFactory();
+
+      BeanDefinitionBuilder b =
+                BeanDefinitionBuilder.rootBeanDefinition(MyBean.class)
+                                     .addPropertyValue("str", "myStringValue");
+
+      beanFactory.registerBeanDefinition("myBean", b.getBeanDefinition());
+
+
+      MyBean bean = beanFactory.getBean(MyBean.class);
+      bean.doSomething();
+ 
+
+
+3) Using BeanFactoryPostProcessor
+   -----------------------------
+BeanFactoryPostProcessor allows client code to customize bean definitions. 
+The method BeanFactoryPostProcessor.postProcessBeanFactory is called by Spring startup process 
+just after all bean definitions have been loaded, but no beans have been instantiated yet.
+
+
+@Configuration
+public class MyConfig {
+  @Bean
+  MyConfigBean myConfigBean () {
+      return new MyConfigBean();
+  }
+}
+
+public class MyConfigBean implements BeanFactoryPostProcessor {
+
+  @Override
+  public void postProcessBeanFactory (
+            ConfigurableListableBeanFactory beanFactory)
+            throws BeansException {
+
+      GenericBeanDefinition bd = new GenericBeanDefinition();
+      bd.setBeanClass(MyBean.class);
+      bd.getPropertyValues().add("strProp", "my string property");
+
+      ((DefaultListableBeanFactory) beanFactory)
+                .registerBeanDefinition("myBeanName", bd);
+  }
+}
+public class MyBean {
+  private String strProp;
+
+  public void setStrProp (String strProp) {
+      this.strProp = strProp;
+  }
+
+  public void doSomething () {
+      System.out.println("from MyBean:  " + strProp);
+  }
+}
+public class BeanFactoryPostProcessorExample {
+
+  public static void main (String[] args) {
+      AnnotationConfigApplicationContext context =
+                new AnnotationConfigApplicationContext(MyConfig.class);
+      MyBean bean = context.getBean(MyBean.class);
+      bean.doSomething();
+  }
+}
+
+
+
+4) Using BeanDefinitionRegistryPostProcessor
+  ----------------------------------------
+This is a sub-interface of BeanFactoryPostProcessor (last example). 
+It allows for the registration of bean definitions. 
+It's method postProcessBeanDefinitionRegistry is called before BeanFactoryPostProcessor#postProcessBeanFactory. 
+This interface is more focused on the BeanDefinition registration rather than general purpose BeanFactoryPostProcessor.
+
+@Configuration
+public class MyConfig {
+  @Bean
+  MyConfigBean myConfigBean () {
+      return new MyConfigBean();
+  }
+}
+public class MyConfigBean
+        implements BeanDefinitionRegistryPostProcessor {
+
+  @Override
+  public void postProcessBeanDefinitionRegistry (BeanDefinitionRegistry registry)
+            throws BeansException {
+
+      GenericBeanDefinition bd = new GenericBeanDefinition();
+      bd.setBeanClass(MyBean.class);
+      bd.getPropertyValues().add("strProp", "my string property");
+      registry.registerBeanDefinition("myBeanName", bd);
+  }
+
+  @Override
+  public void postProcessBeanFactory (ConfigurableListableBeanFactory beanFactory)
+            throws BeansException {
+      //no op
+  }
+}
+public class MyBean {
+  private String strProp;
+
+  public void setStrProp (String strProp) {
+      this.strProp = strProp;
+  }
+
+  public void doSomething () {
+      System.out.println("from MyBean:  " + strProp);
+  }
+}
+public class BeanDefinitionRegistryPostProcessorExample {
+
+  public static void main (String[] args) {
+      AnnotationConfigApplicationContext context =
+                new AnnotationConfigApplicationContext(MyConfig.class);
+
+      MyBean bean = (MyBean) context.getBean("myBeanName");
+      bean.doSomething();
+  }
+}
+
+
+
+Naming Conventions for Bean 
+--------------------------
+The id attribute allows you to specify exactly one id. 
+Conventionally these names are alphanumeric ('myBean', 'fooService', etc.), 
+but may contain special characters as well. If you want to introduce other aliases to the bean,
+you can also specify them in the name attribute, separated by a comma (,), semicolon (;), or white space
+
+The convention is to use the standard Java convention for instance field names when naming beans. 
+That is, bean names start with a lowercase letter, and are camel-cased from then on.

@@ -1,0 +1,25 @@
+what is Jstl?
+Jsp standard tag library
+
+c:set
+-----
+instead of writing the java code inside of scriptlet  
+and assigning a varible  is bad practise writing a java code in jsp page.
+<% 
+int i =0;
+%>
+c:set is used to create a variable 
+<c:set var = "dummyName" value ="dummyvalue2"/>
+
+c:out
+------
+c:out is  used to print value of the UI Page 
+<c:out value = "${dummyName}"> NO Name </c:out>
+
+c:if
+----
+c:if used just like an if when inside the test attribe the value is true it will print 
+"Empty" as below else it will not print any thing 
+<c:if test="${dummyName==null}">
+EMpty
+</c:if>
