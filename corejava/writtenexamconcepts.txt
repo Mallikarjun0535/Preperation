@@ -73,3 +73,104 @@ the parent class main() method will be executed.
 26)We can't perform nesting of increment or decrement operator, other wise we will
 get compile time error
 
+27)**We can't create enum object explicitly and hence we can't invoke constructor directly. 
+Example:  
+enum Beer{ 
+ KF,KO,RC,FO; 
+
+ Beer(){ 
+ System.out.println("constructor called"); 
+ } 
+} 
+class Test{
+ public static void main(String args[]){ 
+ Beer b=new Beer();
+ System.out.println(b); 
+ }
+} Output: Compile time error
+
+28)when we comparing two hetrogenious objects ClassCastException will appear 
+
+29)if we are giving opportunity to Object class toString() method it internally calls hashCode() method. 
+But if we are overriding toString() method it may not call hashCode() method
+We can use toString() method while printing object references and we can use hashCode() method while saving objects into HashSet or Hashtable or HashMap
+
+30)If we are trying to perform cloning or non-clonable objects then we will get
+RuntimeException saying CloneNotSupportedException.
+
+31)`InitiateCaseDao.java` and `CreatePkgDao.java` the class name itself is not right.  It should not be a verb
+It should be like `CaseDao`, `EmployeeDao`, `CaseTypeDao`, `FormPackageDao`, etc (edited) 
+
+32)If reference variable declared as final then we can't perform reassignment for the reference variable 
+it doesn't mean we can't perform any change in that object.
+class Cat {
+	int j;
+
+	Cat(int j) {
+		this.j = j;
+	}
+}
+
+class Dog implements Cloneable {
+	Cat c;
+	int i;
+
+	Dog(Cat c, int i) {
+		this.c = c;
+		this.i = i;
+	}
+
+	public Object clone() throws CloneNotSupportedException {
+		 Cat  c1=new Cat(c.j) ;     
+		 Dog d1=new Dog(c1 , i) ;    
+		 return d1 ;
+	}
+}
+
+class ShallowClone {
+	public static void main(String[] ar) throws CloneNotSupportedException {
+		Cat c = new Cat(20);
+		Dog d1 = new Dog(c, 10);
+		System.out.println(d1.i + "++++" + d1.c.j);
+		Dog d2 = (Dog) d1.clone();
+		d1.i = 888;
+		d1.c.j = 999;
+		System.out.println(d2.i + "++++" + d2.c.j);
+	}
+}
+
+33)We can use valueOf() method to create wrapper object
+ for the given primitive or String this method is alternative to constructor. 
+
+34)  static variable is not part of object state 
+hence they won't participate in serialization because of this 
+declaring a static variable as transient there is no use.
+
+35)1. transient is the modifier applicable only for variables. 
+2. While performing serialization if we don't want to save the value of a particular variable to meet security constant such type of variable ,
+ then we should declare that variable with "transient" keyword. 
+3. At the time of serialization JVM ignores the original value of transient variable and save default value to the file .
+4. That is transient means "not to serialize". 
+
+36)**final variables will be participated into serialization directly by their values. 
+Hence declaring a final variable as transient there is no use.  //the final value will not change
+
+37)1. Whenever we are serializing an object the set of all objects
+      which are reachable from that object will be serialized automatically. 
+      This group of objects is nothing but object graph in serialization. 
+   2. In object graph every object should be Serializable otherwise 
+      we will get runtime exception saying "NotSerializableException". 
+
+38) Exception in thread "main" java.lang.ClassCastException: java.lang.StringBuffer cannot be cast to java.lang.Comparable 
+    If we are depending on default natural sorting order compulsory the objects should be homogeneous and Comparable
+    otherwise we will get ClassCastException.
+    An object is said to be Comparable if and only if the corresponding class implements Comparable interface.
+    String class and all wrapper classes implements Comparable interface 
+    but StringBuffer class doesn't implement Comparable interface hence in the above program we are getting ClassCastException. 
+
+39)Example for converting hashset to tree set
+List<String> list = Arrays.asList("1","2","3","4");
+Set<String> s = list.stream().map(x-> x).collect(Collectors.toSet());
+Set<String> treeset  = s.stream().collect(Collectors.toCollection(TreeSet::new));
+System.out.println(treeset);
+
