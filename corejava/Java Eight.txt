@@ -1,0 +1,664 @@
+1) Lambda Expression 
+2) Functional Interfaces 
+3) Default methods & Static method of interface
+4) Predicates 
+5) Functions 
+6) Double colon operator (::)
+7) Stream API
+8) Date and Time API 
+
+Lambda Expression
+-----------------
+
+why Lambda ?
+To enable functional programming
+To write more readable maintainable& consible code
+To use Api very effectevely 
+To enable parllel processing 
+
+What is lambda expression?
+Lambda expression is anonymus function 
+which is nothing but which is not having name , modifiers, and return type
+
+public void m1(){
+sout("mallik");    ===>>>  () -> {sout("mallik")}
+}
+
+public void add(int a, int b){
+sout(a+b);                    ===>>>  (int a,int b)  -> {sout(a+b)}
+}
+
+public int length(String s){
+sout(s.length());            ===>>> (String s) -> {return s.length()};
+} 
+
+
+more rules of lambda expression
+--------------------------------
+in body of lambda expression  contains only one statement the curly braces are optional.
+
+public void m1(){
+sout("mallik");    ==>>>  () -> {sout("mallik")} ===>>> () -> sout("mallik");
+}
+
+Based on the context some time compile able to guess types automaically(type inference) 
+public void add(int a, int b){
+sout(a+b);                    ===>>>  (int a,int b)  -> {sout(a+b)} ==>> (a,b) -> sout(a+b);
+} 
+
+When compiler is able to guess the return type then we are not going to write return type explicitly
+public int length(String s){
+sout(s.length());            ===>>> (String s) -> {return s.length()}; ==>> (s)-> s.length();
+} 
+
+if lambda expression contains only one input value then parathesis also optional
+(s)->s.length(); ==>> s -> s.length();
+
+
+if lambda expression contain more then one statement we should write inside the curly bases
+() -> {
+----
+---
+};
+
+**********************************************************************************************
+Once i wrote lambda expression i have to call that lambda expression? how we call it ?
+Functional interface
+
+
+what is functional interface?
+An interface which contain single absract method and any number of default are static methods is called funtional interface.
+
+Below are the examples of functional interfaces 
+Runnable ==> run();
+Callable ==> call();
+Actionlistner ==> actionperformed();
+comparable ==> compareTo();
+
+interface intref{
+public void m1();
+
+defult void m2(){
+
+}
+public static void m3(){
+
+}
+}
+
+@FunctionalInterface 
+Java people sepecified new annotation to check  follow the rules to functional interface
+
+
+@FunctionalInterface 
+interface intref{
+public void m1();
+
+defult void m2(){   ==> working fine 
+
+}
+public static void m3(){
+
+}
+}
+
+@FunctionalInterface 
+interface intref1{
+public void m1();
+public void m2();  ==>  C.E @funational annatation  multiple non overiding abstracts methods are present infunctional interface
+}
+
+
+@FunctionalInterface 
+interface intref1{
+                       ==>  C.E @funational annatation  multiple no abstracts methods are present in functional interface
+}
+
+****************************************************************************
+How to call lambda expression?
+For calling a lambda expression we should require a functional inerface.
+functional interface act as type for lambda expression.
+
+see the below example with & with out lambda 
+
+without lambda 
+---------------
+
+interface interf{
+public void m1();
+}
+
+class Demo implemnts interf{
+ public vodi m1(){
+ sout(m1 method implemantation);
+ }
+}
+
+Class Test{
+ p.s.v.m(String[] args){
+ interf f = new Demo();
+ f.m1();
+ }
+}
+
+with lambda
+-----------
+Lambda expression type inferce is happing with annonymus function (intenally)
+so once lambda expression is writen to invoke this functionality we required functional interface
+
+interface interf{
+public void m1();
+}
+
+Class Test{
+ p.s.v.m(String[] args){
+ interf f = () -> sout(m1 method implemantation); // we not required to write seprate class 
+ f.m1(); //so once lambda expression is writen to invoke this functionality we required functional interface
+ }
+}
+
+
+
+other example
+----------------
+
+interface interf{
+public int getlength();
+}
+
+Class Test{
+ p.s.v.m(String[] args){
+ interf f = s -> s.length();
+ f.getlength("hello");
+ }
+}
+
+
+
+Runnable example
+--------------
+
+Class Test{
+ p.s.v.m(String[] args){
+
+new Thread(() -> {
+  for(i=0;i<10;i++){
+	sout("child Thread");
+   }
+}).start();
+
+for(i =0; i<10 ;i++){
+  sout("main thread");
+}
+
+ }
+}
+
+
+default method in interface 
+---------------------------
+ 
+interface interf
+{
+default void m1(){
+sout(" this is newly added interface concretre method");
+}
+}
+
+interface defult methods are automactically available to its child class 
+----------------------------------------------------------------
+class  Test implements interf{
+
+p.s.v.m(String [] args){
+
+Test t = new Test()
+t.m1() --> // we can call directly interface concreate method from implemntation
+
+}
+
+}
+
+
+IF we are not satified interface method implementation we can override the implementaion
+---------------------------------------------------------------------------------------------
+class  Test implements interf{
+
+public void m1(){
+sout(overrided the interface concreate method in implementation class);
+}
+
+p.s.v.m(String [] args){
+
+Test t = new Test()
+t.m1() --> // it will thie class overided method;
+
+}
+
+}
+
+
+default methods with multiple inerface
+----------------------------------------
+
+interface Left(){
+
+default void m1(){
+sout("left  m1 method");
+}
+
+}
+
+
+interface Right(){
+
+default void m1(){
+sout(right m1 method");
+}
+
+}
+
+//This is the ambiguty problem with same method name
+class Test implements Left, Right{
+
+p.s.v.m(String [] args){  //C.E ERROR 
+
+Test t = new Test()
+t.m1() 
+
+}
+
+}
+
+
+
+
+How to resolve above ambigutiy problem ? By overiding the method into the class 
+--------------------------------------
+class Test implements Left, Right{
+public  void m1(){
+sout(test  m1 method");
+//Left.super.m1()
+//Right.super.m1()  --> instead of implemanting by out own if we want to call the super class method like this .
+
+
+}
+p.s.v.m(String [] args){
+
+Test t = new Test()
+t.m1() 
+
+}
+
+}
+
+
+Difference b/w interface and abstaract class 
+
+inerface 
+------
+every varible is public static final 
+state of object is not avialbale 
+we cannot have constructer
+
+
+Inside the inerface from 1.8 onwords we can take  static methods
+--------------------------------------------------------------------------
+
+the main purpose of static method to define general utility methods which are requried for multiple people 
+
+
+inerface interf{
+public static void m1(){
+sout("interface static method");
+}
+}
+
+by default interface static method are not available to implementation class
+
+
+Class Test implements intref{
+p.s.v.m(String [] args){
+
+Test t = new Test()
+//t.m1() --> if we call like this C.Eroor 
+//Test.m1() --> if we call like this C.Eroor 
+
+interf.m1() -->  only way to call interface staic method by using interface name 
+}
+
+}
+
+*** overiding concept is not aplicable for inerface static method
+but we can write our own static method  are intance method with same name.
+as inside the interface
+
+********************************************************************************************
+lambda expressions in collections
+---------------------------------
+-1 before 
+1 after 
+0 equalto
+
+for decending order 
+-----------------------
+(i1,i2) ->  (i1>i2) ? -1 : (i1<i2) ? 1 :0
+
+for acending order 
+-------------------
+(i1,i2) ->  (i1<i2) ? -1 : (i1>i2) ? 1 :0
+
+
+Anonynumus inner class
+-----------------------
+Runnable r = new Runnable() //here we are creating the class without name so this is called anonymus inner class 
+{                           // here runnable object means anonymus innner class object
+			    // here anonymus inner class implemnets Runnable interface 
+ public void run(){
+  for( i =0; i<10 ;i++){
+  sout(i);
+  }
+ }
+}
+Thread t = new Thread(r);
+t.start();
+
+where ever annonymus inner class is using there is chance of writing lambda expression 
+evey annonymus we cant replace only some of we can
+---------------------------------------------------------------------------------------
+ new Thread(()-> {
+ for( i =0; i<10 ;i++){
+  sout(i);
+ }).start();
+
+inside the annonymus class we can declare instance varible 
+------------------------------------------------------------
+
+where as inside the lambda expression we declare only local varibale
+()-> {
+	int x= 999;
+}
+
+
+predefined  functional interfaces (java.util.function)
+----------------------------------
+
+predicate
+Functional 
+Consumer 
+Supplier
+etc...
+
+All predfined functional interfaces are present in java.util.function package
+------------------------------------------------------------------------------
+
+
+
+Predicate(To implement condition check we use predicate)
+----------
+predicate perform some condition check and return true are false
+
+inerface predicate{
+ boolean test(T t) // it take some object and return true are false
+}
+
+Predicate<Integer> p  = i -> i>10;
+sout(p.test(100)); // true
+sout(p.test(5)); //false
+sout(p.test("hello"));//compile time error because predicate take a integer;
+
+Predicate<String> s = s -> s.length >5 ;
+sout(p.test("hello")); 
+sout(p.test("mallik));
+
+to given collection is empty are not
+-----------------------------------
+Predicate<Collection> pc = c -> c.isEmpty();
+List<String> list = new ArrayList<>();
+list.add("A");
+pc.test(list);
+
+
+To check equality of the given object is this object are not
+predicate has one static method 
+ 
+public static Predicate isEqual(T t)
+----------------------------------------
+Predicate<Employee> isCEO=Predicate.isEqual(new Employee("Durga","CEO",30000," Hyderabad"));     
+Employee e1=new Employee("Durga","CEO",30000,"Hyderabad");  
+Employee e2=new Employee("Sunny","Manager",20000,"Hyderabad");
+System.out.println(isCEO.test(e1));//true  
+System.out.println(isCEO.test(e2));//false
+
+For this check we have to overide employee class isequal method
+
+
+
+predicate joining(we can do join multiple predicates)
+-----------------------------------------------------
+
+It’s possible to join predicates into a single predicate by using the following methods.  
+and()  
+or()  
+negate()//these three methods are default methods
+
+p1:given number is greater than 10?
+p2:is even number?
+
+p1.negate()// it is a complement of given predicate (given number is not greater than 10?)
+p1.and(p2) // when both conditions i have to satisfy
+p1.or(p2) // atleast one condition have to satisfy
+
+
+1) import Java.util.function.*;   
+2) class test {   
+3)     public static void main(string[] args) {   
+4)        int[] x = {0, 5, 10, 15, 20, 25, 30};  
+5)                 predicate<integer> p1 = i->i>10; 
+6)                 predicate<integer> p2= i-> i%2==0;   
+7)                 System.out.println("The Numbers Greater Than 10:");   
+8)                 m1(p1, x);  
+9)                 System.out.println("The Even Numbers Are:");   
+10)                 m1(p2, x);   
+11)                 System.out.println("The Numbers Not Greater Than 10:");  
+12)                 m1(p1.negate(), x); 
+13)                 System.out.println("The  Numbers Greater Than 10 And Even Are:â€•);  
+14)                 m1(p1.and(p2), x);  
+15)                 System.out.println("The Numbers Greater Than 10 OR Even:â€•);   
+16)                 m1(p1.or(p2), x); 
+17)         }   
+18)          public static void m1(predicate<integer>p, int[] x) { 
+19)                  for(int x1:x) {   
+20)                        if(p.test(x1))   
+21)                                System.out.println(x1);   
+22)                        }  
+23)                  }   
+24) }   
+
+
+Program to display names starts with 'K' by using Predicate: 
+------------------------------------------------------------
+String[] names={"Sunny","Kajal","Mallika","Katrina","Kareena"}; 
+Predicate<String> startsWithK=s->s.charAt(0)=='K';  
+System.out.println("The Names starts with K are:"); 
+ for(String s: names) 
+ {  
+   if(startsWithK.test(s))  
+   {  
+        System.out.println(s); 
+   } 
+ }
+
+Predicate Example to remove null values and empty strings from the given list
+------------------------------------------------------------------------------
+ String[] names={"Durga","",null,"Ravi","","Shiva",null};
+ Predicate<String> p=s-> s != null && s.length()!=0; 
+ ArrayList<String> list=new ArrayList<String>(); 
+  for(String s : names)  
+    {  
+     if(p.test(s))  
+         { 
+            list.add(s); 
+         }  
+    }  
+
+User Authentication by using Predicate:
+//instead of durga we can write from dao layer
+Predicate<User> p = u->u.username.equals("durga")&& u.pwd.equals("java");
+ if(p.test(user))  
+{   
+   System.out.println("Valid user and can avail all services"); 
+}  
+else{  
+    System.out.println("invalid user you cannot avail services");  
+}  
+
+
+*********************************************************************************
+Function(To perform certain operation and return some result we should go for Function)
+---------
+Funcation retun some value
+
+T= input type 
+R = Return type
+
+interface Function<T,R>
+{
+  R apply(T t);
+}
+
+Find the length of the string
+-----------------------------
+Function<String , Integer> f =  s -> s.length();
+sout(f.apply("Mallik"));
+
+to remove spaces in the given string 
+------------------------------------
+Function<String , String> f =  s -> s.trim()
+sout(f.apply("    Mallik Arjun"));
+
+
+find number of spaces  present in the given String
+----------------------------------------------
+Function<String , int> f =  s -> s.length()-s.replaceAll(" ","").length()
+sout(f.apply("    Mallik  Arjun"));
+
+Function chaining
+------------------
+f1.andThen(f2)//First f1 will be applied then f2 will be applied 
+f1.compose(f2)//First f2 will be applied the f1 will be applied
+
+conver to upper case 
+Function<String , String> f1  = s -> s.toUpperCase();
+take first 11 charchertes in as String 
+Function<String , String> f2 = s -> s.subString(0,11);
+Sout(f1.apply("Mallikarjuna"))
+Sout(f2.apply("Mallikarjuna"))
+Sout(f1.andThen(f2).apply("Mallikarjuna"));
+Sout(f1.compose(f2).apply("Mallikarjuna"));
+
+Function static  method
+----------------------
+
+Function Static identity();
+
+Function<String ,String> f = Function.identity()
+sout(f.apply("mallik"));//prints the same output
+
+
+***************************************************************************8
+Consumer(java.util.function)
+---------------------------
+
+consmer can accept some values and does not return any value
+
+
+interface Consumer<T>{
+
+public void accept(T t);//it just going to print 
+
+}
+
+Consumer<String> c= s -> sout(s);
+sout(c.accept("Hello"));
+sout(c.accept("Mallik"));
+
+CosumerChaining
+--------------
+c1.andThen(c2).andThen(c3).accept(m);
+
+below example
+
+Consumer<Moive> c1 = m -> sout("ready to relese "+m.getName());
+Consumer<Moive> c2 = m -> sout("hit or flop "+m.getresult());
+Consumer<Moive> c2 = m -> sout("movie information store "+m.infostore());
+
+Consumer<Moive> chainedc = c1.andthen(c2).andThen(c3);
+Movie m1 = new Movie("bahubali", hit);
+chainedc.accept(m1);
+
+
+************************************************************************************************************
+
+Supplier
+-------------
+interface Supplier <R>{  -> This method will take any thing and return some thing then we go for supplier
+
+R get();
+}
+
+write a supplier to written a current system Date 
+Supplier<Date> s = () -> new Date();
+sout(s.get());
+
+return some Random Numer 
+----------------------------
+
+Math.Random() always return the values 0 <=x < 1
+it will retunrn 0 but i will not return 1 it wil return 0.9999
+
+Supplier <String>  s = () ->{
+
+String[] s1  -> {"mallik","Arjuna","Naga","vemkata","surya"};
+
+int x  = int(Math.random() * 4);
+ return s1[x];
+
+}
+
+sout(s.get());
+
+
+
+to retun otp
+------------
+
+
+Supplier <String>  s = () ->{
+
+String  otp ="";
+
+for(int i=0;i<6;i++){
+
+otp =  otp+ int(Math.random() * 10);
+
+return otp;
+
+}
+
+sout(s.get());
+
+Predicate 
+Purpose ==> To take some Input and perform some conditional checks 
+
+Function
+Purpose ==> To take some Input and perform required Operation and  return the result  
+
+Consumer 
+Purpose ==> To consume  some Input and perform required Operation. It won’t return anything. 
+
+Supplier
+Purpose ==> To supply some Value base on our Requirement
+
+
+ 2) Interface    Declaration interface  Predicate <T> {   ::::::::::::: } interface  Function <T, R> {   ::::::::::::: } interface Consumer <T> {   ::::::::::::: } interface Supplier <R> {   ::::::::::::: } 3) Signle        Abstract     Method           (SAM) public boolean test (T t); public R apply (T t); public void accept (T t); public R get(); 4) Default      Methods and(), or(), negate() andThen(), compose() andThen() - 5) Static     Method isEqual() identify() 
+ 

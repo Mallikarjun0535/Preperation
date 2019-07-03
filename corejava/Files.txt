@@ -1,0 +1,755 @@
+Files
+-------------------------------------------------------------------------------------------------------------------------
+Java IO contains many subclasses of the InputStream, OutputStream, Reader and Writer classes.
+ The reason is, that all of these subclasses are addressing various different purposes. 
+That is why there are so many different classes. The purposes addressed are summarized below:
+
+File Access
+Network Access
+Internal Memory Buffer Access
+Inter-Thread Communication (Pipes)
+Buffering
+Filtering
+Parsing
+Reading and Writing Text (Readers / Writers)
+Reading and Writing Primitive Data (long, int etc.)
+Reading and Writing Objects
+
+File
+------------
+File f=new File("abc.txt");
+
+This line 1st checks whether abc.txt file is already available (or) not if it is already
+available then "f" simply refers that file.
+If it is not already available then it won't create any physical file just creates a java File
+object represents name of the file.
+
+1. File f=new File(String name);
+Creates a java File object that represents name of the file or directory in current
+working directory.
+2. File f=new File(String subdirname,String name);
+Creates a File object that represents name of the file or directory present in
+specified sub directory.
+3. File f=new File(File subdir,String name);
+
+methods of a file class
+boolean exists();
+boolean createNewFile();
+boolean mkdir();
+boolean isFile();-->it reprents the physical file are not
+boolean isDirectory();
+String[] list();-->returns the number of files present in the directory are subdirectory
+long length();-- returns the number of cahracters present in a file.
+boolean delete();
+
+
+
+RandomAccessFile
+----------------
+RandomAccessFile class is part of Java IO. While creating the instance of RandomAccessFile in java, 
+we need to provide the mode to open the file. 
+For example, to open the file for read only mode we have to use “r” and for read-write operations we have to use “rw”.
+
+Before you can work with the RandomAccessFile class you must instantiate it. Here is how that looks:
+RandomAccessFile file = new RandomAccessFile("c:\\data\\file.txt", "rw");
+Notice the second input parameter to the constructor: "rw". This is the mode you want to open file in. "rw" means read/write mode. 
+
+To read or write at a specific location in a RandomAccessFile you must first position the file pointer at the location to read or write.
+This is done using the seek() method. The current position of the file pointer can be obtained by calling the getFilePointer() method.
+
+RandomAccessFile file = new RandomAccessFile("c:\\data\\file.txt", "rw");
+file.seek(200);
+long pointer = file.getFilePointer();
+file.close();
+
+read
+----
+RandomAccessFile file = new RandomAccessFile("c:\\data\\file.txt", "rw");
+int aByte = file.read();
+file.close();
+
+write
+----
+RandomAccessFile file = new RandomAccessFile("c:\\data\\file.txt", "rw");
+file.write("Hello World".getBytes());
+file.close();;
+
+************************************************************************************************************
+
+Unicode Transformation Format
+
+Reader
+------------------
+The Java Reader is the base class of all Reader's in the Java IO API. 
+Subclasses include a BufferedReader, PushbackReader, InputStreamReader, StringReader and several others.
+
+Reader reader = new FileReader("c:\\data\\myfile.txt");
+    int data = reader.read();
+    while(data != -1){
+        char dataChar = (char) data;
+        data = reader.read();
+    }
+
+Notice, that while an InputStream returns one byte at a time, meaning a value between 0 and 255 (or -1 if the stream has no more data), 
+the Reader returns a char at a time, meaning a value between 0 and 65535 (or -1 if the stream has no more data). 
+This does not necessarily mean that the Reader reads two bytes at a time from the source it is connected to. 
+It may read one or more bytes at a time, depending on the encoding of the text being read.
+
+
+Writer
+----------
+The Java Writer class is the base class of all Writers in the Java IO API. 
+Subclasses include BufferedWriter and PrintWriter among others.
+
+Here is a simple Java IO Writer example:
+Writer writer = new FileWriter("c:\\data\\file-output.txt");
+writer.write("Hello World Writer");
+writer.close();
+
+
+InputStreamReader -> If you have an InputStream and want to read characters from it, you can wrap it in an InputStreamReader
+Reader reader = new InputStreamReader(inputStream);
+
+OutputStreamWriter
+Writer writer = new OutputStreamWriter(outputStream);
+
+Reader reader = new BufferedReader(new FileReader(...));
+Writer writer = new BufferedWriter(new FileWriter(...));
+
+**************************************************************************************************************
+IO Streams are a core concept in Java IO. 
+A stream is a conceptually endless flow of data.
+A stream is a way of sequentially accessing a file. 
+
+Streams and Readers / Writers need to be closed properly when you are done using them.
+This is done by calling the close() method. This requires a little thought though. Look at this code:
+finally {
+  if(input != null) input.close();
+}
+
+
+read()
+------------
+The read() method of an InputStream returns an int which contains the byte value of the byte read. Here is an InputStream read() example:
+int data = inputstream.read();
+End of Stream read() method returns -1, That is, -1 as int value, not -1 as byte or short value.
+
+write(byte)
+------------
+The write(byte) method is used to write a single byte to the OutputStream. 
+The write() method of an OutputStream takes an int which contains the byte value of the byte to write.
+Only the first byte of the int value is written. The rest is ignored.
+
+read(byte[])
+--------------
+The InputStream class also contains two read() methods which can read data from the InputStream's source into a byte array. These methods are:
+int read(byte[])
+int read(byte[], int offset, int length)
+
+The read(byte[]) method will attempt to read as many bytes into the byte array given as parameter as the array has space for. 
+The read(byte[]) method returns an int telling how many bytes were actually read.
+
+InputStream inputstream = new FileInputStream("c:\\data\\input-text.txt");
+byte[] data      = new byte[1024];
+int    bytesRead = inputstream.read(data);
+while(bytesRead != -1) {
+  doSomethingWithData(data, bytesRead);
+  bytesRead = inputstream.read(data);
+}
+inputstream.close();
+
+write(byte[])
+--------------
+The OutputStream class also has a write(byte[] bytes) method and a write(byte[] bytes, int offset, int length) 
+which both can write an array or part of an array of bytes to the OutputStream.
+
+flush()
+--------
+Flushes the output stream and forces any buffered output bytes to be written out. 
+The general contract of flush is that calling it is an indication that, 
+if any bytes previously written have been buffered by the implementation of the output stream,
+such bytes should immediately be written to their intended destination.
+
+mark() and reset()
+---------------------
+The mark() sets a mark internally in the InputStream which marks the point in the stream to which data has been read so far.
+ The code using the InputStream can then continue reading data from it.
+ If the code using the InputStream wants to go back to the point in the stream where the mark was set,
+ the code calls reset() on the InputStream.
+
+***************************************************************************************************************************
+Java IO contains many subclasses of the InputStream, OutputStream, Reader and Writer classes.
+The reason is, that all of these subclasses are addressing various different purposes. 
+That is why there are so many different classes. The purposes addressed are summarized below:
+
+File Access
+Network Access
+Internal Memory Buffer Access
+Inter-Thread Communication (Pipes)
+Buffering
+Filtering
+Parsing
+Reading and Writing Text (Readers / Writers)
+Reading and Writing Primitive Data (long, int etc.)
+Reading and Writing Objects
+
+
+						
+Byte Based		Input			Output			Character Based			Input				Output
+--------------------------------------------------------------------------------------------------------------------------------------------------
+Basic		     InputStream		OutputStream						Reader				Writer
+													InputStreamReader		OutputStreamWriter	
+Byte Streams
+------------
+A byte stream access the file byte by byte. 
+Java programs use byte streams to perform input and output of 8-bit bytes.
+It is suitable for any kind of file, however not quite appropriate for text files. 
+For example, if the file is using a unicode encoding and a character is represented with two bytes, 
+the byte stream will treat these separately and you will need to do the conversion yourself.
+Byte oriented streams do not use any encoding scheme while Character oriented streams use character encoding scheme(UNICODE). 
+All byte stream classes are descended from InputStream and OutputStream .
+
+import java.io.*;
+public class TestClass{
+  public static void main(String[] args) {
+    FileInputStream fis = null;
+    FileOutputStream fos = null;
+    try {
+      fis = new FileInputStream("in.txt");
+      fos = new FileOutputStream ("out.txt");
+      int temp;
+      while ((temp = fis.read()) != -1) //read byte by byte
+      fos.write((byte)temp);        //write byte by byte
+      if (fis != null)
+      fis.close();
+      if (fos != null)
+      fos.close();
+    }catch(Exception e){
+      System.out.println(e);
+    }
+  }
+}
+
+Character Streams
+-------------------
+A character stream will read a file character by character. 
+Character Stream is a higher level concept than Byte Stream .
+A Character Stream is, effectively, a Byte Stream that has been wrapped with logic that allows it to output characters from a specific encoding .
+That means, a character stream needs to be given the file's encoding in order to work properly.
+Character stream can support all types of character sets ASCII, Unicode, UTF-8, UTF-16 etc.
+All character stream classes are descended from Reader and Writer.
+
+import java.io.*;
+public class TestClass{
+  public static void main(String[] args) {
+    FileReader reader = null;
+    try {
+      reader = new FileReader("in.txt");
+      int fChar;
+      while ((fChar = reader.read()) != -1) //read char by char
+        System.out.println((char)fChar);          //write char by char
+    }catch(Exception e){
+      System.out.println(e);
+    }
+  }
+}
+----------------------------------------------------------------------------------------------------------------------------------
+Arrays		ByteArrayInputStream	ByteArrayOutputStream		                CharArrayReader			CharArrayWriter
+---------------------------------------------------------------------------------------------------------------------------------
+Files		FileInputStream		FileOutputStream				FileReader			FileWriter
+		RandomAccessFile	RandomAccessFile
+FileInputStream
+Java FileInputStream class obtains input bytes from a file. It is used for reading byte-oriented data (streams of raw bytes) such as image data, audio, video etc
+
+FileWriter:
+By using FileWriter object we can write character data to the file.
+
+FileWriter fw=new FileWriter(String name);
+FileWriter fw=new FileWriter(File f);
+
+Instead of overriding if we want append operation then we should go for the following 2
+constructors.
+FileWriter fw=new FileWriter(String name,boolean append);
+FileWriter fw=new FileWriter(File f,boolean append);
+1. write(int ch);  -> To write a single character to the file.
+2. write(char[] ch); -> To write an array of characters to the file.
+3. write(String s); -> To write a String to the file.
+4. flush(); -> To give the guarantee the total data include last character also written to the file.
+5. close(); -> To close the stream.
+
+FileWriter fw=new FileWriter("cricket.txt",true);   
+fw.write(99);//adding a single character   
+fw.write("haran\nsoftware solutions");  
+fw.write("\n");   
+char[] ch={'a','b','c'};   
+w.write(ch);  
+fw.write("\n"); 
+fw.flush();   
+fw.close();
+
+
+
+****The main problem with FileWriter is we have to insert line separator manually ,
+which is difficult to the programmer. ('\n') And even line separator varing from system to system.
+
+FileReader:
+By using FileReader object we can read character data from the file.
+Constructors:
+FileReader fr=new FileReader(String name);
+FileReader fr=new FileReader (File f);
+
+1. int read();
+It attempts to read next character from the file and return its Unicode value. If
+the next character is not available then we will get -1.
+2. int i=fr.read();
+3. System.out.println((char)i);
+As this method returns unicode value , while printing we have to perform type
+casting.
+4. int read(char[] ch);
+It attempts to read enough characters from the file into char[] array and returns
+the no of characters copied from the file into char[] array.
+5. File f=new File("abc.txt");
+6. Char[] ch=new Char[(int)f.length()];
+7. void close();
+
+
+FileReader fr=new FileReader("cricket.txt");
+int i=fr.read();     //more amount of data  
+while(i!=-1){  
+System.out.print((char)i);    
+i=fr.read();   
+}  
+
+File f=new File("cricket.txt");
+FileReader fr=new FileReader(f);  
+char[] ch=new char[(int)f.length()]; //small amount of data  
+ fr.read(ch);   
+for(char ch1:ch)  
+ {    
+System.out.print(ch1);  
+ } 
+
+
+**************Usage of FileWriter and FileReader is not recommended because :
+1. While writing data by FileWriter compulsory we should insert line separator(\n)
+manually which is a bigger headache to the programmer.
+2. While reading data by FileReader we have to read character by character
+instead of line by line which is not convenient to the programmer.
+3. To overcome these limitations we should go for BufferedWriter and
+BufferedReader concepts.
+
+
+     fw = new FileWriter(new File("mytextfile.txt"));
+            fw.write(String.format("My name is %s.",name));
+            fw.write(System.lineSeparator()); //new line
+            fw.write(String.format("I am %d years old.",age));
+            fw.write(System.lineSeparator()); //new line
+            fw.write(String.format("Today's temperature is %.2f.",temp));
+            fw.write(System.lineSeparator()); //new line
+            fw.close();
+----------------------------------------------------------------------------------------------------------------------------------	
+Pipes		PipedInputStream	PipedOutputStream				PipedReader			PipedWriter
+
+
+A piped I/O is based on the producer-consumer pattern, 
+where the producer produces data and the consumer consumes it.
+A piped output stream can be connected to a piped input stream to create a communication pipe. 
+The piped output stream is the sending end of the pipe.
+Typically, data is written to a PipedOutputStream object by one thread and data is read from the connected PipedInputStream by some other thread.
+Attempting to use both objects from a single thread is not recommended as it may deadlock the thread.
+The pipe is said to be broken if a thread that was reading data bytes from the connected piped input stream is no longer alive. 
+
+****Mostly, the PipedInputStream and PipedOutputStream are used by different threads running in the same JVM
+
+import java.io.PipedInputStream;
+import java.io.PipedOutputStream;
+
+public class PipedInputOutputExample extends Thread {
+
+   private PipedInputStream pi;
+   private PipedOutputStream po;
+
+   PipedInputOutputExample(String name, PipedInputStream pi, PipedOutputStream po) {
+           this.setName(name);
+           this.pi = pi;
+           this.po = po;
+   }
+
+   public void run() {
+       try {
+          if (getName().equals("Source")) {
+              byte source[] = new byte[10];
+              for (byte i = 0; i <= 9; i++)
+                  source[i] = i;
+              po.write(source, 0, 10); // write numbers 0 to 9
+              po.close();
+          } else {
+              byte[] data = new byte[10];
+              int len = pi.read(data, 0, 10);
+              for (int i = 0; i < len; i++)
+                   System.out.println(data[i]);
+              pi.close();
+          }
+       } catch (IOException e) {
+               e.printStackTrace();
+       } 
+   }
+
+   public static void main(String[] args) throws Exception {
+      PipedOutputStream po = new PipedOutputStream();
+      PipedInputStream pi = new PipedInputStream(); // or new PipedInputStream(po);
+      pi.connect(po);
+
+      PipedInputOutputExample io1 = new PipedInputOutputExample("Source", pi, po);
+      PipedInputOutputExample io2 = new PipedInputOutputExample("Destination", pi, po);
+      io1.start();
+      Thread.sleep(500);
+      io2.start();
+  }
+}
+
+
+
+The Java PipedReader class (java.io.PipedReader) makes it possible to read the contents of a pipe as a stream of characters. 
+As such it works very much like a PipedInputStream except the PipedInputStream is byte based, not character based. 
+The PipedReader is intended to read text, in other words.
+
+A Java PipedReader must be connected to a PipedWriter. 
+Often, the PipedReader and PipedWriter are used by different threads.
+ Only one PipedReader can be connected to the same PipedWriter.
+
+PipedReader Example
+Here is a simple Java PipedReader example:
+
+PipedWriter pipedWriter = new PipedWriter();
+PipedReader pipedReader = new PipedReader(pipedWriter);
+
+int data = pipedReader.read();
+while(data != -1) {
+  //do something with data...
+  doSomethingWithData(data);
+
+  data = pipedReader.read();
+}
+pipedReader.close();
+
+
+
+
+-----------------------------------------------------------------------------------------------------------------------------------
+Buffering 	BufferedInputStream	BufferedOutputStream				BufferedReader			BufferedWriter
+
+
+BufferedInputStream 
+Java BufferedInputStream class is used to read information from stream. It internally uses buffer mechanism to make the performance fast
+
+BufferedOutputStream 
+Java BufferedOutputStream class is used for buffering an output stream. It internally uses buffer to store data. It adds more efficiency than to write data directly into a stream. So, it makes the performance fast.
+
+InputStream input = new BufferedInputStream(
+                      new FileInputStream("c:\\data\\input-file.txt"));
+
+int bufferSize = 8 * 1024;
+InputStream input = new BufferedInputStream(
+                      new FileInputStream("c:\\data\\input-file.txt"),
+                      bufferSize
+    );
+
+
+BufferedWriter*****
+By using BufferedWriter object we can write character data to the file.
+Constructors:
+BufferedWriter bw=new BufferedWriter(writer w);
+BufferedWriter bw=new BufferedWriter(writer w,int buffersize)
+
+
+*******Note: BufferedWriter never communicates directly with the file it should communicates
+via some writer object.
+
+1. BufferedWriter bw=new BufferedWriter("cricket.txt"); (invalid)
+2. BufferedWriter bw=new BufferedWriter (new File("cricket.txt")); (invalid)
+3. BufferedWriter bw=new BufferedWriter (new FileWriter("cricket.txt")); (valid)
+
+Methods:
+1. write(int ch);
+2. write(char[] ch);
+3. write(String s);
+4. flush();
+5. close();
+6. newline();
+Inserting a new line character to the file.
+When compared with FileWriter which of the following capability(facility) is available
+as method in BufferedWriter.
+1. Writing data to the file.
+2. Closing the writer.
+3. Flush the writer.
+4. Inserting newline character.
+
+
+****Note : When ever we are closing BufferedWriter automatically underlying writer will be
+closed and we are not close explicitly
+
+BufferedReader****
+This is the most enhanced(better) Reader to read character data from the file.
+
+Constructors:
+BufferedReader br=new BufferedReader(Reader r);
+BufferedReader br=new BufferedReader(Reader r,int buffersize);
+
+Note: BufferedReader can not communicate directly with the File it should
+communicate via some Reader object.
+
+The main advantage of BufferedReader over FileReader is we can read data line by line
+instead of character by character
+
+
+Methods:
+1. int read();
+2. int read(char[] ch);
+3. String readLine();
+It attempts to read next line and return it , from the File. if the next line is not
+available then this method returns null.
+4. void close();
+
+Note:
+Whenever we are closing BufferedReader automatically underlying FileReader
+will be closed it is not required to close explicitly.Even this rule is applicable for BufferedWriter also.
+
+------------------------------------------------------------------------------------------------------------------------------------------
+Filtering 	FilterInputStream	FilterOutputStream				FilterReader			FilterWriter
+------------------------------------------------------------------------------------------------------------------------------------------
+Parsing		PushbackInputStream                                                     PushbackReader
+		StreamTokenizer								LineNumberReader
+
+The PushbackInputStream is intended to be used when you parse data from an InputStream.
+Sometimes you need to read ahead a few bytes to see what is coming,
+before you can determine how to interpret the current byte. 
+The PushbackInputStream allows you to do that. 
+Well, actually it allows you to push the read bytes back into the stream. 
+These bytes will then be read again the next time you call read().
+
+PushbackInputStream Example
+Here is a simple PushbackInputStream example:
+
+PushbackInputStream input = new PushbackInputStream(new FileInputStream("c:\\data\\input.txt"));
+int data = input.read();
+input.unread(data);
+
+The call to read() reads a byte just like from an InputStream. 
+The call to unread() pushes a byte back into the PushbackInputStream.
+The next time read() is called the pushed back bytes will be read first.
+If you push back multiple bytes into the PushbackInputStream,
+the latest byte pushed back will be returned first from read(), just like on a stack.
+
+Setting the Push Back Limit of a PushbackInputStream
+You can set the number of bytes you should be able to unread in the constructor of the PushbackInputStream.
+ Here is how to set the push back limit via the PushbackInputStream constructor:
+
+int pushbackLimit = 8;
+PushbackInputStream input = new PushbackInputStream(
+                                new FileInputStream("c:\\data\\input.txt"),
+                                pushbackLimit);
+This example sets an internal buffer of 8 bytes. That means you can unread at most 8 bytes at a time, before reading them again.
+
+// Java code illustrating unread() method   
+import java.io.ByteArrayInputStream; 
+import java.io.IOException; 
+import java.io.PrintWriter; 
+import java.io.PushbackInputStream; 
+  
+  
+public class PushbackInputStreamDemo  
+{ 
+    public static void main(String arg[]) throws Exception 
+    { 
+        PrintWriter pw = new PrintWriter(System.out, true); 
+        String str = "GeeksforGeeks a computer science portal "; 
+        byte b[] = str.getBytes(); 
+        ByteArrayInputStream bout = new ByteArrayInputStream(b); 
+        PushbackInputStream push = new PushbackInputStream(bout); 
+          
+        int c; 
+        while((c=push.read())!=-1) 
+        { 
+            pw.print((char)c); 
+        } 
+        pw.println(); 
+  
+      // unread method 
+        push.unread(b); 
+        push.unread(b, 0, 6); 
+  
+        while((c=push.read())!=-1) 
+        { 
+            pw.print((char)c); 
+        } 
+        pw.println(); 
+        pw.close(); 
+    } 
+} 
+Output:
+
+GeeksforGeeks a computer science portal
+orGeeks a computer science portal
+--------------------------------------------------------------------------------------------------------------------------------------------		 	
+Strings	 	 									StringReader	                 StringWriter
+
+StringReader
+The Java StringReader class enables you to turn an ordinary String into a Reader. 
+This is useful if you have data as a String but need to pass that String to a component that only accepts a Reader.
+
+String input = "Input String... ";
+StringReader stringReader = new StringReader(input);
+
+int data = stringReader.read();
+while(data != -1) {
+  //do something with data...
+  doSomethingWithData(data);
+
+  data = stringReader.read();
+}
+stringReader.close();
+
+
+The Java StringWriter class (java.io.StringWriter) enables you to obtain the characters written to a Writer as a String. 
+The StringWriter is useful if you have a component that only can write data to a Writer but you need that data as a String.
+StringWriter stringWriter = new StringWriter();
+
+//write characters to writer.
+stringWriter.write("This is a text");
+
+String       data       = stringWriter.toString();
+StringBuffer dataBuffer = stringWriter.getBuffer();
+
+stringWriter.close();
+
+
+--------------------------------------------------------------------------------------------------------------------------------------------
+Data	        DataInputStream	              DataOutputStream	 	
+--------------------------------------------------------------------------------------------------------------------------------------------
+Data 
+Formatted				       PrintStream	 	 							PrintWriter
+
+System.out and System.err are PrintStreams
+printf()
+
+The Java PrintStream class (java.io.PrintStream) enables you to write formatted data to an underlying OutputStream. 
+The PrintStream class can format primitive types like int, long etc. formatted as text, rather than as their byte values.
+That is why it is called a PrintStream, because it formats the primitive values as text - like they would look when printed to the screen (or printed to paper).
+
+PrintWriter:
+This is the most enhanced Writer to write text data to the file.
+
+By using FileWriter and BufferedWriter we can write only character data to the
+File but by using PrintWriter we can write any type of data to the File.
+
+Constructors:
+PrintWriter pw=new PrintWriter(String name);
+PrintWriter pw=new PrintWriter(File f);
+PrintWriter pw=new PrintWriter(Writer w);
+PrintWriter can communicate either directly to the File or via some Writer object also.
+Methods:
+1. write(int ch);
+2. write (char[] ch);
+3. write(String s);
+4. flush();
+5. close();
+6. print(char ch);
+7. print (int i);
+8. print (double d);
+9. print (boolean b);
+10. print (String s);
+11. println(char ch);
+12. println (int i);
+13. println(double d);
+14. println(boolean b);
+15. println(String s);
+
+
+*******What is the difference between write(100) and print(100)?
+In the case of write(100) the corresponding character "d" will be added to the File but
+in the case of print(100) "100" value will be added directly to the File
+
+
+-------------------------------------------------------------------------------------------------------------------------------------------
+Objects			ObjectInputStream	       ObjectOutputStream	
+
+The Java ObjectInputStream class (java.io.ObjectInputStream) enables you to read Java objects from an InputStream instead of just raw bytes.
+You wrap an InputStream in a ObjectInputStream and then you can read objects from it.
+Of course the bytes read must represent a valid, serialized Java object. Otherwise reading objects will fail.
+
+
+import java.io.*;
+
+public class ObjectInputStreamExample {
+
+    public static class Person implements Serializable {
+        public String name = null;
+        public int    age  =   0;
+    }
+
+
+    public static void main(String[] args) throws IOException, ClassNotFoundException {
+
+        ObjectOutputStream objectOutputStream =
+            new ObjectOutputStream(new FileOutputStream("data/person.bin"));
+
+        Person person = new Person();
+        person.name = "Jakob Jenkov";
+        person.age  = 40;
+
+        objectOutputStream.writeObject(person);
+        objectOutputStream.close();
+
+
+        ObjectInputStream objectInputStream =
+            new ObjectInputStream(new FileInputStream("data/person.bin"));
+
+        Person personRead = (Person) objectInputStream.readObject();
+
+        objectInputStream.close();
+
+        System.out.println(personRead.name);
+        System.out.println(personRead.age);
+    }
+}
+
+
+This example first creates an ObjectOutputStream connected to a FileOutputStream. 
+Then it creates a Person object and writes it to the ObjectOutputStream, 
+and then closes the ObjectOutputStream.
+
+Then the example creates an ObjectInputStream connected to the same file the ObjectOutputStream was connected to.
+ The example then reads in an object from the ObjectInputStream and casts it to a Person object. 
+After that the ObjectInputStream is also closed, and the values read into the Person object are printed to System.out.
+
+The output printed from running this example should be:
+Jakob Jenkov
+40
+
+
+------------------------------------------------------------------------------------------------------------------------------------------ 	 
+Utilities	SequenceInputStream
+
+
+InputStream input1 = new FileInputStream("c:\\data\\file1.txt");
+InputStream input2 = new FileInputStream("c:\\data\\file2.txt");
+
+SequenceInputStream sequenceInputStream =
+    new SequenceInputStream(input1, input2);
+
+int data = sequenceInputStream.read();
+while(data != -1){
+    System.out.println(data);
+    data = sequenceInputStream.read();
+}
+-------------------------------------------------------------------------------------------------------------------------------------------
+Note 1:
+1. The most enhanced Reader to read character data from the File isBufferedReader.
+2. The most enhanced Writer to write character data to the File is PrintWriter.
+Note 2:
+1. In general we can use Readers and Writers to handle character data. Where as
+we can use InputStreams and OutputStreams to handle binary data(like images,
+audio files, video files etc).
+2. We can use OutputStream to write binary data to the File and we can use
+InputStream to read binary data from the File.
