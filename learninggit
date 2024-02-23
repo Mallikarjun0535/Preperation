@@ -1,1 +1,5 @@
-
+git ls-files --> listing all files
+git status   --> for wathing the changes
+git add      --> adding the file
+git add .    --> adding all the files from the current folder
+git add -u   --> adding updated files
