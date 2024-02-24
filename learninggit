@@ -3,3 +3,22 @@ git status   --> for wathing the changes
 git add      --> adding the file
 git add .    --> adding all the files from the current folder
 git add -u   --> adding updated files
+
+git log             --> show the list of commits
+git log --oneline   --> show the shortcut commits 
+git show ase232     --> show the difference for the given commit
+git diff f34322 ase232  --> the changes between these commits
+
+#git config
+
+git config --local 
+
+
+
+#git branching 
+
+git branch "mallikTestbranch"   --> for creating a branch
+git branch -m "mallikTestbranch" --> for creating and shifiting to that branch
+git checkout -b "mallikTestbranch" --> for creating branch and shifting to that branch
+git branch            --> with * shows the current branch 
+git checkout "malliktestbranch"
